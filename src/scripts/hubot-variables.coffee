@@ -27,7 +27,14 @@ module.exports = (robot) ->
   robot.adapter._oldsend = robot.adapter.send
   robot.adapter.send = (envelope, strings...) ->
     for i in [0...strings.length]
-      strings[i] = strings[i].replace('$blah', 'whatever')
+      strings[i] = strings[i].replace variableRE, ($0, $1, $2, $3) ->
+        if $1
+          return $0
+        varname = $2 || $3
+        if !robot.brain.data.variables[varname]
+          return $0
+        index = robot.brain.data.variables.values[Math.floor(Math.random() * robot.brain.data.variables.values.length)]
+        return robot.brain.data.variables[varname].values[index]
 
     @_oldsend envelope, strings
 
