@@ -94,6 +94,18 @@ module.exports = (robot) ->
       return
     msg.reply robot.brain.data.variables[varname].values.join(', ')
 
+  robot.hear /^list vars$/, (msg) ->
+    ret = []
+    for varname in Object.keys(robot.brain.data.variables)
+      v = robot.brain.data.variables[varname]
+      type = ""
+      if v.type is "noun"
+        type =  "(n)"
+      else if v.type is "verb"
+        type =  "(v)"
+      ret.push varname + type
+    msg.reply ret.join(', ')
+
   robot.enter (response) ->
     # track enter
   robot.leave (response) ->
