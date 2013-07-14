@@ -87,6 +87,13 @@ module.exports = (robot) ->
     robot.brain.data.variables[varname].values.remove value
     msg.reply "Okay."
 
+  robot.hear /^list var (\w+)$/, (msg) ->
+    varname = msg.match[1]
+    if !robot.brain.data.variables[varname]
+      msg.reply "Sorry, I don't know of a variable '" + varname + "'."
+      return
+    msg.reply robot.brain.data.variables[varname].values.join(', ')
+
   robot.enter (response) ->
     # track enter
   robot.leave (response) ->
