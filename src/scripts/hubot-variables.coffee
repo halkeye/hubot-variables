@@ -26,9 +26,9 @@ module.exports = (robot) ->
   robot.brain.data.variables = {}
 
   robot.hear /^create var (\w+)$/, (msg) ->
-    varname = msg.match[0]
+    varname = msg.match[1]
     if robot.brain.data.variables[varname]
-      msg.reply "Sorry, I don't know of a variable '" + varname + "'."
+      msg.reply "Sorry, Variable of '" + varname + "' already exists."
       return
     robot.brain.data.variables[varname] = {
       readonly: 1, type: "var", values: []
