@@ -20,7 +20,7 @@
       "url": "https://github.com/halkeye/hubot-variables/blob/master/LICENSE-MIT"
     }
   ],
-  "main": "src/lib/hubot-variables",
+  "main": "src/scripts/hubot-variables",
   "engines": {
     "node": ">= 0.6.0"
   },
