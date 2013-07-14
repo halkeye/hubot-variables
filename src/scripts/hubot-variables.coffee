@@ -54,6 +54,21 @@ module.exports = (robot) ->
     }
     msg.reply "Okay."
 
+  robot.hear /^remove var (\w+)\s*(!+)?$/, (msg) ->
+    varname = msg.match[1]
+    is_forced = !!msg.match[2]
+    if !robot.brain.data.variables[varname]
+      msg.reply "Sorry, I don't know of a variable '" + varname + "'."
+      return
+    if !is_forced
+      msg.reply "This action cannot be undone  If you want to proceed append a '!'"
+      return
+    if robot.brain.data.variables[varname].values.length
+      msg.reply "Okay, removed variable " + varname + " with " + robot.brain.data.variables[varname].values.length + " values"
+    else
+      msg.reply "Okay, removed variable " + varname
+    delete robot.brain.data.variables[varname]
+
   robot.hear /^add value (\w+) (.*)$/, (msg) ->
     varname = msg.match[1]
     value = msg.match[2]
@@ -85,6 +100,14 @@ module.exports = (robot) ->
       msg.reply "Sorry, you don't have permissions to edit '"+varname+"'."
       return
     robot.brain.data.variables[varname].values.remove value
+    msg.reply "Okay."
+
+  robot.hear /^var (\w+) type (var|verb|noun)$/, (msg) ->
+    varname = msg.match[1]
+    if !robot.brain.data.variables[varname]
+      msg.reply "Sorry, I don't know of a variable '" + varname + "'."
+      return
+    robot.brain.data.variables[varname].type = msg.match[2]
     msg.reply "Okay."
 
   robot.hear /^list var (\w+)$/, (msg) ->
