@@ -7,15 +7,15 @@ module.exports = (grunt)->
     jshint:
       options:
         jshintrc: '.jshintrc'
-      src:
-        src: ['src/src/**/*.js']
+      scripts:
+        src: ['src/scripts/**/*.js']
       test:
         src: ['src/test/**/*.js']
     copy:
       main:
         files: [
             expand: true
-            cwd: 'src/'
+            cwd: 'scripts/'
             src: ['**/*.js']
             dest: 'out/'
         ]
@@ -23,7 +23,7 @@ module.exports = (grunt)->
       gruntfile:
         src: 'Gruntfile.coffee'
       src:
-        src: ['src/src/*.coffee']
+        src: ['src/scripts/*.coffee']
       test:
         src: ['src/test/*.coffee']
       options:
@@ -34,12 +34,12 @@ module.exports = (grunt)->
     coffee:
       #compile:
       #  files:
-      #    'out/src/vender.js': ['src/vendor/*.coffee']
-      src:
+      #    'out/scripts/vender.js': ['src/vendor/*.coffee']
+      scripts:
         expand: true
-        cwd: 'src/src/'
+        cwd: 'src/scripts/'
         src: ['**/*.coffee']
-        dest: 'out/src/'
+        dest: 'out/scripts/'
         ext: '.js'
       test:
         expand: true
@@ -65,14 +65,14 @@ module.exports = (grunt)->
         files: '<%= coffeelint.gruntfile.src %>'
         tasks: ['coffeelint:gruntfile']
       jsLib:
-        files: '<%= jshint.src.src %>'
-        tasks: ['jshint:src', 'simplemocha']
+        files: '<%= jshint.scripts.src %>'
+        tasks: ['jshint:scripts', 'simplemocha']
       jsTest:
         files: '<%= jshint.test.src %>'
         tasks: ['jshint:test', 'simplemocha']
       coffeeLib:
-        files: '<%= coffeelint.src.src %>'
-        tasks: ['coffeelint:src', 'coffee:src', 'simplemocha']
+        files: '<%= coffeelint.scripts.src %>'
+        tasks: ['coffeelint:scripts', 'coffee:scripts', 'simplemocha']
       coffeeTest:
         files: '<%= coffeelint.test.src %>'
         tasks: ['coffeelint:test', 'coffee:test', 'simplemocha']
