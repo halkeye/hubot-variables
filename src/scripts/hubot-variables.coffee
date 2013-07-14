@@ -13,6 +13,8 @@
 
 'use strict'
 
+Array::remove or= (e) -> @[t..t] = [] if (t = @indexOf(e)) > -1
+
 module.exports = (robot) ->
   variableRE = /(\\)?(?:\$([a-zA-Z_]\w+)|\${([a-zA-Z_]\w+)})/g
   can_edit_var = (user, varname) ->
@@ -71,6 +73,18 @@ module.exports = (robot) ->
         msg.reply "I had it that way!"
         return
     robot.brain.data.variables[varname].values.push value
+    msg.reply "Okay."
+
+  robot.hear /^remove value (\w+) (.*)$/, (msg) ->
+    varname = msg.match[1]
+    value = msg.match[2]
+    if !robot.brain.data.variables[varname]
+      msg.reply "Sorry, I don't know of a variable '" + varname + "'."
+      return
+    if !can_edit_var msg.message.user, varname
+      msg.reply "Sorry, you don't have permissions to edit '"+varname+"'."
+      return
+    robot.brain.data.variables[varname].values.remove value
     msg.reply "Okay."
 
   robot.enter (response) ->
