@@ -53,7 +53,7 @@ module.exports = (robot) ->
   # constructor
   robot.brain.data.variables = {}
 
-  robot.respond /^create var (\w+)$/, (msg) ->
+  robot.respond /create var (\w+)$/, (msg) ->
     varname = msg.match[1]
     if robot.brain.data.variables[varname]
       msg.reply "Sorry, Variable of '" + varname + "' already exists."
@@ -63,7 +63,7 @@ module.exports = (robot) ->
     }
     msg.reply "Okay."
 
-  robot.respond /^remove var (\w+)\s*(!+)?$/, (msg) ->
+  robot.respond /remove var (\w+)\s*(!+)?$/, (msg) ->
     varname = msg.match[1]
     is_forced = !!msg.match[2]
     if !robot.brain.data.variables[varname]
@@ -78,7 +78,7 @@ module.exports = (robot) ->
       msg.reply "Okay, removed variable " + varname
     delete robot.brain.data.variables[varname]
 
-  robot.respond /^add value (\w+) (.*)$/, (msg) ->
+  robot.respond /add value (\w+) (.*)$/, (msg) ->
     varname = msg.match[1]
     value = msg.match[2]
     lcvalue = value.toLowerCase()
@@ -99,7 +99,7 @@ module.exports = (robot) ->
     robot.brain.data.variables[varname].values.push value
     msg.reply "Okay."
 
-  robot.respond /^remove value (\w+) (.*)$/, (msg) ->
+  robot.respond /remove value (\w+) (.*)$/, (msg) ->
     varname = msg.match[1]
     value = msg.match[2]
     if !robot.brain.data.variables[varname]
@@ -111,7 +111,7 @@ module.exports = (robot) ->
     robot.brain.data.variables[varname].values.remove value
     msg.reply "Okay."
 
-  robot.respond /^var (\w+) type (var|verb|noun)$/, (msg) ->
+  robot.respond /var (\w+) type (var|verb|noun)$/, (msg) ->
     varname = msg.match[1]
     if !robot.brain.data.variables[varname]
       msg.reply "Sorry, I don't know of a variable '" + varname + "'."
@@ -119,14 +119,14 @@ module.exports = (robot) ->
     robot.brain.data.variables[varname].type = msg.match[2]
     msg.reply "Okay."
 
-  robot.respond /^list var (\w+)$/, (msg) ->
+  robot.respond /list var (\w+)$/, (msg) ->
     varname = msg.match[1]
     if !robot.brain.data.variables[varname]
       msg.reply "Sorry, I don't know of a variable '" + varname + "'."
       return
     msg.reply robot.brain.data.variables[varname].values.join(', ')
 
-  robot.respond /^list vars$/, (msg) ->
+  robot.respond /list vars$/, (msg) ->
     ret = []
     for varname in Object.keys(robot.brain.data.variables)
       v = robot.brain.data.variables[varname]
