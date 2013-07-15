@@ -164,7 +164,3 @@ module.exports = (robot) ->
       ret.push varname + type
     msg.reply ret.join(', ')
 
-  robot.enter (response) ->
-    # track enter
-  robot.leave (response) ->
-    # track leave
