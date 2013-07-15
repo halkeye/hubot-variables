@@ -26,34 +26,40 @@ Array::remove or= (e) -> @[t..t] = [] if (t = @indexOf(e)) > -1
 
 module.exports = (robot) ->
   variableRE = /(\\)?(?:\$([a-zA-Z_]\w+)|\${([a-zA-Z_]\w+)})/g
-  can_edit_var = (user, varname) ->
-    variable = robot.brain.data.variables[varname]
-    if user.roles
-      if "edit_variables" in user.roles
-        return true
-      if "edit_variable_" + varname in user.roles
-        return true
-    return !!variable.readonly
 
+  class Variables
+    @can_edit_var = (user, varname) ->
+      variable = robot.brain.data.variables[varname]
+      if user.roles
+        if "edit_variables" in user.roles
+          return true
+        if "edit_variable_" + varname in user.roles
+          return true
+      return !!variable.readonly
+    @process = (string, user) ->
+      return string.replace variableRE, ($0, $1, $2, $3) ->
+        if $1
+          return $0
+        varname = $2 || $3
+        if varname == "who"
+          return user.name
+        v = robot.brain.data.variables[varname]
+        if !v
+          return $0
+        return v.values[Math.floor(Math.random() * v.values.length)]
+
+  robot.variables = Variables
   if process.env.ALWAYS_VARIABLE
     robot.adapter._oldsend = robot.adapter.send
     robot.adapter.send = (envelope, strings...) ->
       for i in [0...strings.length]
-        strings[i] = strings[i].replace variableRE, ($0, $1, $2, $3) ->
-          if $1
-            return $0
-          varname = $2 || $3
-          if !robot.brain.data.variables[varname]
-            return $0
-          index = robot.brain.data.variables.values[Math.floor(Math.random() * robot.brain.data.variables.values.length)]
-          return robot.brain.data.variables[varname].values[index]
+        strings[i] = robot.variables.process strings[i], envelope.user
       @_oldsend envelope, strings
-
 
   # constructor
   robot.brain.data.variables = {}
 
-  robot.respond /create var (\w+)$/, (msg) ->
+  robot.hear /^create var (\w+)$/, (msg) ->
     varname = msg.match[1]
     if robot.brain.data.variables[varname]
       msg.reply "Sorry, Variable of '" + varname + "' already exists."
@@ -63,7 +69,7 @@ module.exports = (robot) ->
     }
     msg.reply "Okay."
 
-  robot.respond /remove var (\w+)\s*(!+)?$/, (msg) ->
+  robot.hear /^remove var (\w+)\s*(!+)?$/, (msg) ->
     varname = msg.match[1]
     is_forced = !!msg.match[2]
     if !robot.brain.data.variables[varname]
@@ -78,7 +84,7 @@ module.exports = (robot) ->
       msg.reply "Okay, removed variable " + varname
     delete robot.brain.data.variables[varname]
 
-  robot.respond /add value (\w+) (.*)$/, (msg) ->
+  robot.hear /^add value (\w+) (.*)$/, (msg) ->
     varname = msg.match[1]
     value = msg.match[2]
     lcvalue = value.toLowerCase()
@@ -86,7 +92,7 @@ module.exports = (robot) ->
     if !robot.brain.data.variables[varname]
       msg.reply "Sorry, I don't know of a variable '" + varname + "'."
       return
-    if !can_edit_var msg.message.user, varname
+    if !robot.variables.can_edit_var msg.message.user, varname
       msg.reply "Sorry, you don't have permissions to edit '"+varname+"'."
       return
     if value.match(variableRE)
@@ -99,19 +105,19 @@ module.exports = (robot) ->
     robot.brain.data.variables[varname].values.push value
     msg.reply "Okay."
 
-  robot.respond /remove value (\w+) (.*)$/, (msg) ->
+  robot.hear /^remove value (\w+) (.*)$/, (msg) ->
     varname = msg.match[1]
     value = msg.match[2]
     if !robot.brain.data.variables[varname]
       msg.reply "Sorry, I don't know of a variable '" + varname + "'."
       return
-    if !can_edit_var msg.message.user, varname
+    if !robot.variables.can_edit_var msg.message.user, varname
       msg.reply "Sorry, you don't have permissions to edit '"+varname+"'."
       return
     robot.brain.data.variables[varname].values.remove value
     msg.reply "Okay."
 
-  robot.respond /var (\w+) type (var|verb|noun)$/, (msg) ->
+  robot.hear /^var (\w+) type (var|verb|noun)$/, (msg) ->
     varname = msg.match[1]
     if !robot.brain.data.variables[varname]
       msg.reply "Sorry, I don't know of a variable '" + varname + "'."
@@ -119,14 +125,14 @@ module.exports = (robot) ->
     robot.brain.data.variables[varname].type = msg.match[2]
     msg.reply "Okay."
 
-  robot.respond /list var (\w+)$/, (msg) ->
+  robot.hear /^list var (\w+)$/, (msg) ->
     varname = msg.match[1]
     if !robot.brain.data.variables[varname]
       msg.reply "Sorry, I don't know of a variable '" + varname + "'."
       return
     msg.reply robot.brain.data.variables[varname].values.join(', ')
 
-  robot.respond /list vars$/, (msg) ->
+  robot.hear /^list vars$/, (msg) ->
     ret = []
     for varname in Object.keys(robot.brain.data.variables)
       v = robot.brain.data.variables[varname]
