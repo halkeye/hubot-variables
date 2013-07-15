@@ -1,22 +1,24 @@
 # Description:
-#   None
+#   Variables in strings
 #
 # Dependencies:
+#   None
 #
 # Configuration:
+#   ALWAYS_VARIABLE - Process all output instead of modules that specificlly handle it
 #
 # Commands:
-#   hubot create var <varname>
-#   hubot remove var <varname>
-#   hubot remove var <varname>!
-#   hubot add value <varname> <value>
-#   hubot remove value <varname> <value>
-#   hubot var <varname> type <var|verb|noun>
-#   hubot list var <varname>
-#   hubot list vars
+#   hubot create var <varname> - Create new variable
+#   hubot remove var <varname> - Remove Variable
+#   hubot remove var <varname>! - Remove variable - confirmed
+#   hubot add value <varname> <value> - Add value to variable
+#   hubot remove value <varname> <value> - Remove value from variable
+#   hubot var <varname> type <var|verb|noun> - Set type of variable
+#   hubot list var <varname> - List values in variable
+#   hubot list vars - List all variables
 #
 # Author:
-#   Gavin Mogan <gavin@kodekoan.com>
+#   halkeye
 
 'use strict'
 
@@ -33,19 +35,19 @@ module.exports = (robot) ->
         return true
     return !!variable.readonly
 
-  robot.adapter._oldsend = robot.adapter.send
-  robot.adapter.send = (envelope, strings...) ->
-    for i in [0...strings.length]
-      strings[i] = strings[i].replace variableRE, ($0, $1, $2, $3) ->
-        if $1
-          return $0
-        varname = $2 || $3
-        if !robot.brain.data.variables[varname]
-          return $0
-        index = robot.brain.data.variables.values[Math.floor(Math.random() * robot.brain.data.variables.values.length)]
-        return robot.brain.data.variables[varname].values[index]
-
-    @_oldsend envelope, strings
+  if process.env.ALWAYS_VARIABLE
+    robot.adapter._oldsend = robot.adapter.send
+    robot.adapter.send = (envelope, strings...) ->
+      for i in [0...strings.length]
+        strings[i] = strings[i].replace variableRE, ($0, $1, $2, $3) ->
+          if $1
+            return $0
+          varname = $2 || $3
+          if !robot.brain.data.variables[varname]
+            return $0
+          index = robot.brain.data.variables.values[Math.floor(Math.random() * robot.brain.data.variables.values.length)]
+          return robot.brain.data.variables[varname].values[index]
+      @_oldsend envelope, strings
 
 
   # constructor
