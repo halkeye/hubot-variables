@@ -43,6 +43,15 @@ module.exports = (robot) ->
         varname = $2 || $3
         if varname == "who"
           return user.name
+        ## FIXME - pretty sure this doesn't get updated when people leave rooms, it'll have wildly out of date users
+        if varname == "someone"
+          recent_users = []
+          users = robot.brain.users()
+          for userid in Object.keys(users)
+            u = users[userid]
+            if u.room == user.room
+              recent_users.push user.name
+          return recent_users[Math.floor(Math.random() * recent_users.length)]
         v = robot.brain.data.variables[varname]
         if !v
           return $0
