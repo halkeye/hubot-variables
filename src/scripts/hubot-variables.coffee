@@ -141,6 +141,17 @@ module.exports = (robot) ->
       return
     msg.reply robot.brain.data.variables[varname].values.join(', ')
 
+  robot.hear /^(un)?protect \$(\w+)$/, (msg) ->
+    varname = msg.match[2]
+    if !robot.brain.data.variables[varname]
+      msg.reply "Sorry, I don't know of a variable '" + varname + "'."
+      return
+    if !robot.variables.can_edit_var msg.message.user, varname
+      msg.reply "Sorry, you don't have permissions to edit '"+varname+"'."
+      return
+    robot.brain.data.variables[varname].readonly = !(msg.match[1] == "un")
+    msg.reply "Okay."
+
   robot.hear /^list vars$/, (msg) ->
     ret = []
     for varname in Object.keys(robot.brain.data.variables)
