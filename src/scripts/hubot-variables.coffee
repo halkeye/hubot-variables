@@ -28,6 +28,12 @@ module.exports = (robot) ->
   variableRE = /(\\)?(?:\$([a-zA-Z_]\w+)|\${([a-zA-Z_]\w+)})/g
 
   class Variables
+    @clear_all = () ->
+      robot.brain.data.variables = {}
+
+    @has_variable = (key) ->
+      key of robot.brain.data.variables
+
     @can_edit_var = (user, varname) ->
       variable = robot.brain.data.variables[varname]
       if user.roles
@@ -66,7 +72,7 @@ module.exports = (robot) ->
       @_oldsend envelope, strings
 
   # constructor
-  robot.brain.data.variables = {}
+  robot.variables.clear_all()
 
   robot.hear /^create var (\w+)$/, (msg) ->
     varname = msg.match[1]

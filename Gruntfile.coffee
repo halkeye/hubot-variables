@@ -22,7 +22,7 @@ module.exports = (grunt)->
     coffeelint:
       gruntfile:
         src: 'Gruntfile.coffee'
-      src:
+      scripts:
         src: ['src/scripts/*.coffee']
       test:
         src: ['src/test/*.coffee']
@@ -50,7 +50,7 @@ module.exports = (grunt)->
     simplemocha:
       all:
         src: [
-          'node_modules/should/src/should.js'
+          'node_modules/should/lib/should.js'
           'out/test/**/*.js'
         ]
         options:

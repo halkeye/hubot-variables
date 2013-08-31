@@ -1,6 +1,16 @@
 'use strict'
 
-hubot_variables = require('../lib/hubot-variables.js')
+Hubot = require('hubot')
+Path = require('path')
+request = require('supertest')
+sinon = require('sinon')
+
+adapterPath = Path.join Path.dirname(require.resolve 'hubot'), "src", "adapters"
+robot = Hubot.loadBot adapterPath, "shell", "true", "MochaHubot"
+
+{TextMessage} = require Path.join(adapterPath,'../message')
+
+hubot_variables = require('../scripts/hubot-variables.js')(robot)
 
 ###
 ======== A Handy Little Mocha Reference ========
@@ -52,9 +62,36 @@ Should assertions:
   user.should.be.a('object').and.have.property('name', 'tj')
 ###
 
-describe 'Awesome', ()->
-  describe '#of()', ()->
+user = {}
+send_message = (msg) ->
+  user = robot.brain.userForId '1', name: 'Shell', room: 'Shell'
+  robot.adapter.receive new TextMessage user, msg, 'messageId'
 
-    it 'awesome', ()->
-      hubot_variables.awesome().should.eql('awesome')
+describe 'hubot-variables', () ->
+  beforeEach () ->
+    robot.variables.clear_all()
+
+  describe 'create var robins', () ->
+    before () ->
+      messages = [
+        
+      ]
+      robot.adapter.send = sinon.spy()
+      send_message "create var robins"
+
+    it 'has variable robins', () ->
+      robot.variables.has_variable 'robins'
+
+  describe 'add value robins', () ->
+    before () ->
+      messages = [
+        "create var robins"
+        "add value robins Dick Grayson"
+      ]
+      robot.adapter.send = sinon.spy()
+      for msg in messages
+        send_message msg
+
+    it 'has variable robins', () ->
+      robot.variables.has_variable 'robins'
 
