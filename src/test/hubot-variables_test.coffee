@@ -10,7 +10,7 @@ robot = Hubot.loadBot adapterPath, "shell", "true", "MochaHubot"
 
 {TextMessage} = require Path.join(adapterPath,'../message')
 
-hubot_variables = require('../scripts/hubot-variables.js')(robot)
+hubot_variables = require('../scripts/hubot-variables')(robot)
 
 ###
 ======== A Handy Little Mocha Reference ========
