@@ -2,6 +2,9 @@
 
 The best project ever.
 
+[![Build Status](https://travis-ci.org/halkeye/hubot-variables.png)](https://travis-ci.org/halkeye/hubot-variables)
+
+
 ## Getting Started
 Install the module with: `npm install hubot-variables`
 
