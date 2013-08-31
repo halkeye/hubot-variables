@@ -39,7 +39,8 @@
     "grunt": "~0.4.1",
     "supertest": "~0.7.1",
     "sinon": "~1.7.3",
-    "hubot": "~2.6.1"
+    "hubot": "~2.6.1",
+    "grunt-cli": "~0.1.9"
   },
   "keywords": []
 }
