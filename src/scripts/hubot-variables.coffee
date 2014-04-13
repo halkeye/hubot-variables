@@ -42,26 +42,35 @@ module.exports = (robot) ->
         if "edit_variable_" + varname in user.roles
           return true
       return !!variable.readonly
-    @process = (string, user) ->
-      return string.replace variableRE, ($0, $1, $2, $3) ->
-        if $1
-          return $0
-        varname = $2 || $3
-        if varname == "who"
-          return user.name
-        ## FIXME - pretty sure this doesn't get updated when people leave rooms, it'll have wildly out of date users
-        if varname == "someone"
-          recent_users = []
-          users = robot.brain.users()
-          for userid in Object.keys(users)
-            u = users[userid]
-            if u.room == user.room
-              recent_users.push user.name
-          return recent_users[Math.floor(Math.random() * recent_users.length)]
-        v = robot.brain.data.variables[varname]
-        if !v
-          return $0
-        return v.values[Math.floor(Math.random() * v.values.length)]
+    @replacement_function = ($0, $1, $2, $3,user) ->
+      if $1
+        return $0
+      varname = $2 || $3
+      if varname == "who"
+        return [varname, user.name]
+      ## FIXME - pretty sure this doesn't get updated when people leave rooms, it'll have wildly out of date users
+      if varname == "someone"
+        recent_users = []
+        users = robot.brain.users()
+        for userid in Object.keys(users)
+          u = users[userid]
+          if u.room == user.room
+            recent_users.push user.name
+        return [varname, recent_users[Math.floor(Math.random() * recent_users.length)]]
+      v = robot.brain.data.variables[varname]
+      if !v
+        return $0
+      return [varname, v.values[Math.floor(Math.random() * v.values.length)]]
+
+    @process = (string, user, output_history) ->
+      return string.replace variableRE, ($0, $1, $2, $3) =>
+        rv = @replacement_function($0,$1,$2,$3,user)
+        if rv instanceof Array
+          if output_history
+            output_history.vars ||= {}
+            output_history.vars[rv[0]] = rv[1]
+          return rv[1]
+        return rv
 
   robot.variables = Variables
   if process.env.ALWAYS_VARIABLE
