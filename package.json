@@ -42,5 +42,7 @@
     "hubot": "~2.6.1",
     "grunt-cli": "~0.1.9"
   },
-  "keywords": []
+  "keywords": [
+    "hubot", "hubot-scripts"
+  ]
 }
