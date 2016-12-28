@@ -1,9 +1,9 @@
 language: node_js
 node_js:
-  - "node"
-  - "0.12"
-install:
-  - 'npm install -g npm'
-  - 'npm install'
-before_script:
-  - 'npm install -g grunt-cli'
+- node
+after_success:
+- npm install codacy-coverage
+- npm run test:cov-codacy
+env:
+  global:
+  - secure: cIH9KJHAfYZIvRZux0SXGXyHo3ez/8JrRMLnxK1pvhYUxiYLsHcO4N+svElTlw6anOYpxMb7zVg7/QJDe9rsjEhARmg1f3nDC4NAw+Mo+xsqUQ6KAvP40Al8sKi+Edd4xCjQKvSqJNcKudaOajk9mdhI/tbMaz1EnRD0JGbT8po=
