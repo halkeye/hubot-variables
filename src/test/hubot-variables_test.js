@@ -48,19 +48,22 @@ describe('hubot-variables', function () {
 
   describe('list vars', function () {
     beforeEach(function () {
-      return this.room.user.say('halkeye', 'create var robins')
+      return Promise.resolve()
+        .then(() => this.room.user.say('halkeye', 'create var robins'))
+        .then(() => this.room.user.say('halkeye', 'var robins type noun'))
         .then(() => this.room.user.say('halkeye', 'add value robins Dick Grayson'))
+        .then(() => this.room.user.say('halkeye', 'create var actions'))
+        .then(() => this.room.user.say('halkeye', 'var actions type verb'))
+        .then(() => this.room.user.say('halkeye', 'add value actions chop'))
+        .then(() => this.room.user.say('halkeye', 'create var digit'))
+        .then(() => this.room.user.say('halkeye', 'add value digit 1'))
         .then(() => this.room.user.say('halkeye', 'list vars'));
     });
 
     it('responds with the right values', function () {
-      this.room.messages.should.eql([
-        [ 'halkeye', 'create var robins' ],
-        [ 'hubot', '@halkeye Okay.' ],
-        [ 'halkeye', 'add value robins Dick Grayson' ],
-        [ 'hubot', '@halkeye Okay.' ],
+      this.room.messages.slice(-2).should.eql([
         [ 'halkeye', 'list vars' ],
-        [ 'hubot', '@halkeye robins' ]
+        [ 'hubot', '@halkeye robins(n), actions(v), digit' ]
       ]);
     });
   });

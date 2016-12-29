@@ -6,12 +6,10 @@ The best project ever.
 
 
 ## Getting Started
-Install the module with: `npm install hubot-variables`
 
-```javascript
-var hubot_variables = require('hubot-variables');
-hubot_variables.awesome(); // "awesome"
-```
+1. Install the module: `npm install --save hubot-variables`
+2. Add it `hubot-variables` to your external-scripts.json file in your hubot directory
+
 
 ## Documentation
 _(Coming soon)_
