@@ -18,7 +18,7 @@ describe('hubot-variables', function () {
     it('responds with the right values', function () {
       this.room.messages.should.eql([
         [ 'halkeye', 'create var robins' ],
-        [ 'hubot', '@halkeye Okay.' ],
+        [ 'hubot', '@halkeye Okay.' ]
       ]);
     });
     it('has variable robins', function () {
@@ -38,7 +38,7 @@ describe('hubot-variables', function () {
         [ 'halkeye', 'create var robins' ],
         [ 'hubot', '@halkeye Okay.' ],
         [ 'halkeye', 'add value robins Dick Grayson' ],
-        [ 'hubot', '@halkeye Okay.' ],
+        [ 'hubot', '@halkeye Okay.' ]
       ]);
     });
     it('has variable robins', function () {
