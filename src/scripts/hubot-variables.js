@@ -44,7 +44,7 @@ module.exports = function Export (robot) {
           return true;
         }
       }
-      return !!variable.readonly;
+      return !variable.readonly;
     }
     static replacementFunction ($0, $1, $2, $3, user) {
       if ($1) {
@@ -84,8 +84,7 @@ module.exports = function Export (robot) {
           return rv[1];
         }
         return rv;
-      }
-      );
+      });
     }
   }
 
@@ -107,7 +106,7 @@ module.exports = function Export (robot) {
       return;
     }
     robot.brain.data.variables[varname] = {
-      readonly: true, type: 'var', values: []
+      readonly: false, type: 'var', values: []
     };
     return msg.reply('Okay.');
   });

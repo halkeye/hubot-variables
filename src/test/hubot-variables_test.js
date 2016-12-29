@@ -24,6 +24,12 @@ describe('hubot-variables', function () {
     it('has variable robins', function () {
       this.room.robot.variables.hasVariable('robins');
     });
+    it('responds with the right values', function () {
+      this.room.messages.should.eql([
+        [ 'halkeye', 'create var robins' ],
+        [ 'hubot', '@halkeye Okay.' ]
+      ]);
+    });
   });
 
   describe('add value robins', function () {
@@ -43,6 +49,95 @@ describe('hubot-variables', function () {
     });
     it('has variable robins', function () {
       this.room.robot.variables.hasVariable('robins');
+    });
+  });
+  describe('protect var', function () {
+    describe('existing variable', function () {
+      beforeEach(function () {
+        return Promise.resolve()
+          .then(() => this.room.user.say('halkeye', 'create var robins'))
+          .then(() => this.room.user.say('halkeye', 'protect $robins'));
+      });
+
+      it('responds with the right values', function () {
+        this.room.messages.slice(-2).should.eql([
+          [ 'halkeye', 'protect $robins' ],
+          [ 'hubot', '@halkeye Okay.' ]
+        ]);
+      });
+    });
+    describe('nonexisting variable', function () {
+      beforeEach(function () {
+        return Promise.resolve()
+          .then(() => this.room.user.say('halkeye', 'protect $robins'));
+      });
+
+      it('responds with the right values', function () {
+        this.room.messages.slice(-2).should.eql([
+          [ 'halkeye', 'protect $robins' ],
+          [ 'hubot', "@halkeye Sorry, I don't know of a variable 'robins'." ]
+        ]);
+      });
+    });
+    describe('already protected', function () {
+      beforeEach(function () {
+        return Promise.resolve()
+          .then(() => this.room.user.say('halkeye', 'create var robins'))
+          .then(() => this.room.user.say('halkeye', 'protect $robins'))
+          .then(() => this.room.user.say('halkeye', 'protect $robins'));
+      });
+
+      it('responds with the right values', function () {
+        this.room.messages.slice(-2).should.eql([
+          [ 'halkeye', 'protect $robins' ],
+          [ 'hubot', "@halkeye Sorry, you don't have permissions to edit 'robins'." ]
+        ]);
+      });
+    });
+  });
+
+  describe('unprotect var', function () {
+    describe('existing variable', function () {
+      beforeEach(function () {
+        return Promise.resolve()
+          .then(() => this.room.user.say('halkeye', 'create var robins'))
+          .then(() => this.room.user.say('halkeye', 'unprotect $robins'));
+      });
+
+      it('responds with the right values', function () {
+        this.room.messages.slice(-2).should.eql([
+          [ 'halkeye', 'unprotect $robins' ],
+          [ 'hubot', '@halkeye Okay.' ]
+        ]);
+      });
+    });
+    describe('nonexisting variable', function () {
+      beforeEach(function () {
+        return Promise.resolve()
+          .then(() => this.room.user.say('halkeye', 'unprotect $robins'));
+      });
+
+      it('responds with the right values', function () {
+        this.room.messages.slice(-2).should.eql([
+          [ 'halkeye', 'unprotect $robins' ],
+          [ 'hubot', "@halkeye Sorry, I don't know of a variable 'robins'." ]
+        ]);
+      });
+    });
+    describe('already unprotected', function () {
+      beforeEach(function () {
+        return Promise.resolve()
+          .then(() => this.room.user.say('halkeye', 'create var robins'))
+          .then(() => this.room.user.say('halkeye', 'unprotect $robins'))
+          .then(() => this.room.user.say('halkeye', 'unprotect $robins'));
+      });
+
+      it('responds with the right values', function () {
+        this.room.messages.slice(-2).should.eql([
+          [ 'halkeye', 'unprotect $robins' ],
+          [ 'hubot', '@halkeye Okay.' ]
+        ]);
+      });
     });
   });
 
