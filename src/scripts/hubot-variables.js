@@ -20,6 +20,8 @@
 // Author:
 //   halkeye
 
+const entries = require('object.entries');
+
 module.exports = function Export (robot) {
   let variableRE = /(\\)?(?:\$([a-zA-Z_]\w+)|\${([a-zA-Z_]\w+)})/g;
 
@@ -204,10 +206,9 @@ module.exports = function Export (robot) {
     return msg.reply('Okay.');
   });
 
-  return robot.hear(/^list vars$/, function (msg) {
+  robot.hear(/^list vars$/, function (msg) {
     let ret = [];
-    for (let varname of Array.from(Object.keys(robot.brain.data.variables))) {
-      let v = robot.brain.data.variables[varname];
+    for (let [varname, v] of entries(robot.brain.data.variables)) {
       let type = '';
       if (v.type === 'noun') {
         type = '(n)';

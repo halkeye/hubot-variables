@@ -46,5 +46,8 @@
   "keywords": [
     "hubot",
     "hubot-scripts"
-  ]
+  ],
+  "dependencies": {
+    "object.entries": "^1.0.4"
+  }
 }
