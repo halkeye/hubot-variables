@@ -140,6 +140,48 @@ describe('hubot-variables', function () {
       });
     });
   });
+  describe('list var', function () {
+    it('missing value', function () {
+      return Promise.resolve()
+        .then(() => this.room.user.say('halkeye', 'list var robins'))
+        .then(() => {
+          this.room.messages.slice(-2).should.eql([
+            [ 'halkeye', 'list var robins' ],
+            [ 'hubot', "@halkeye Sorry, I don't know of a variable 'robins'." ]
+          ]);
+        });
+    });
+    it('lists single value', function () {
+      return Promise.resolve()
+        .then(() => this.room.user.say('halkeye', 'create var robins'))
+        .then(() => this.room.user.say('halkeye', 'var robins type noun'))
+        .then(() => this.room.user.say('halkeye', 'add value robins Dick Grayson'))
+        .then(() => this.room.user.say('halkeye', 'list var robins'))
+        .then(() => {
+          this.room.messages.slice(-2).should.eql([
+            [ 'halkeye', 'list var robins' ],
+            [ 'hubot', '@halkeye Dick Grayson' ]
+          ]);
+        });
+    });
+    it('lists multiple values', function () {
+      return Promise.resolve()
+        .then(() => this.room.user.say('halkeye', 'create var robins'))
+        .then(() => this.room.user.say('halkeye', 'var robins type noun'))
+        .then(() => this.room.user.say('halkeye', 'add value robins Dick Grayson'))
+        .then(() => this.room.user.say('halkeye', 'add value robins Jason Todd'))
+        .then(() => this.room.user.say('halkeye', 'add value robins Tim Drake'))
+        .then(() => this.room.user.say('halkeye', 'add value robins Stephanie Brown'))
+        .then(() => this.room.user.say('halkeye', 'add value robins Damian Wayne'))
+        .then(() => this.room.user.say('halkeye', 'list var robins'))
+        .then(() => {
+          this.room.messages.slice(-2).should.eql([
+            [ 'halkeye', 'list var robins' ],
+            [ 'hubot', '@halkeye Dick Grayson, Jason Todd, Tim Drake, Stephanie Brown, Damian Wayne' ]
+          ]);
+        });
+    });
+  });
 
   describe('list vars', function () {
     beforeEach(function () {

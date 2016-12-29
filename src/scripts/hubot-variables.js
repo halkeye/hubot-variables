@@ -182,15 +182,6 @@ module.exports = function Export (robot) {
     return msg.reply('Okay.');
   });
 
-  robot.hear(/^list var (\w+)$/, function (msg) {
-    let varname = msg.match[1];
-    if (!robot.brain.data.variables[varname]) {
-      msg.reply(`Sorry, I don't know of a variable '${varname}'.`);
-      return;
-    }
-    return msg.reply(robot.brain.data.variables[varname].values.join(', '));
-  });
-
   robot.hear(/^(un)?protect \$(\w+)$/, function (msg) {
     let varname = msg.match[2];
     if (!robot.brain.data.variables[varname]) {
@@ -203,6 +194,15 @@ module.exports = function Export (robot) {
     }
     robot.brain.data.variables[varname].readonly = !(msg.match[1] === 'un');
     return msg.reply('Okay.');
+  });
+
+  robot.hear(/^list var (\w+)$/, function (msg) {
+    let varname = msg.match[1];
+    if (!robot.brain.data.variables[varname]) {
+      msg.reply(`Sorry, I don't know of a variable '${varname}'.`);
+      return;
+    }
+    msg.reply(robot.brain.data.variables[varname].values.join(', '));
   });
 
   robot.hear(/^list vars$/, function (msg) {
