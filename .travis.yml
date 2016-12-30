@@ -1,9 +1,17 @@
 language: node_js
+cache:
+  directories:
+    - node_modules
 node_js:
-- node
+  - node
+before_script:
+  - npm prune
 after_success:
-- npm install codacy-coverage
-- npm run test:cov-codacy
+  - npm install codacy-coverage
+  - npm run test:cov-codacy
 env:
   global:
     secure: fuytW0QPiTG/NyO7Da9YkBTsue/NzmY4Ne4k2oiFnaO17gMfuDInePHR0iIhKqZw2lJsPJOojNh8IVaCPFSNkcX1LGhhQIkf8/2l6zLWcNFVrqtzq3rnlMHECrJFK1SbNskCeXCv4NB8r5/dCk4jShIybVj+QOXvU/2gaDE69pU=
+branches:
+  except:
+    - /^v\d+\.\d+\.\d+$/

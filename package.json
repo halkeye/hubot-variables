@@ -1,7 +1,7 @@
 {
   "name": "hubot-variables",
   "description": "The best project ever.",
-  "version": "1.0.0",
+  "version": "0.0.0-development",
   "homepage": "https://github.com/halkeye/hubot-variables",
   "author": {
     "name": "Gavin Mogan",
@@ -10,7 +10,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git://github.com/halkeye/hubot-variables.git"
+    "url": "https://github.com/halkeye/hubot-variables.git"
   },
   "bugs": {
     "url": "https://github.com/halkeye/hubot-variables/issues"
@@ -29,7 +29,8 @@
     "test:cov-codacy": "nyc --reporter=lcov --reporter=text mocha && cat coverage/lcov.info | codacy-coverage",
     "test:report": "nyc --reporter=lcov --reporter=text mocha",
     "test": "mocha",
-    "lint": "eslint ."
+    "lint": "eslint .",
+    "semantic-release": "semantic-release pre && npm publish && semantic-release post"
   },
   "devDependencies": {
     "coffee-script": "^1.12.2",
@@ -41,7 +42,8 @@
     "hubot-test-helper": "^1.5.0",
     "mocha": "^3.2.0",
     "nyc": "^10.0.0",
-    "should": "~11.1.1"
+    "should": "~11.1.1",
+    "semantic-release": "^6.3.2"
   },
   "keywords": [
     "hubot",
