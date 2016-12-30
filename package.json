@@ -51,5 +51,8 @@
   ],
   "dependencies": {
     "object.entries": "^1.0.4"
+  },
+  "release": {
+    "verifyConditions": []
   }
 }
