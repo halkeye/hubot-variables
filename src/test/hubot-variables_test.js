@@ -14,6 +14,14 @@ describe('hubot-variables', function () {
 
   describe('process string', function () {
     beforeEach(function () {
+      this.user = {
+        name: 'Commissioner Gordon',
+        room: 'room1'
+      };
+      this.room.robot.brain.data.users = [
+        this.user,
+        { name: 'The Riddler', room: 'Arkham' } // this user is in a different room
+      ];
       this.room.robot.brain.data.variables = {
         robins: { readonly: false, type: 'var', values: [ 'Dick Grayson' ] },
         villains: { readonly: false, type: 'var', values: [ 'Killer Croc', 'Black Mask', 'Clayface', 'Poison Ivy', 'Penguin' ] },
@@ -24,59 +32,71 @@ describe('hubot-variables', function () {
       };
     });
     it('no history', function () {
-      this.room.robot.variables.process('Robin is $robins', this.room.user)
+      this.room.robot.variables.process('Robin is $robins', this.user)
         .should.eql('Robin is Dick Grayson');
     });
     it('nonexistent single variable', function () {
       const history = {};
-      this.room.robot.variables.process('I am a $developer', this.room.user, history)
+      this.room.robot.variables.process('I am a $developer', this.user, history)
         .should.eql('I am a $developer');
       history.should.eql({ });
     });
     it('single variable', function () {
       const history = {};
-      this.room.robot.variables.process('Robin is $robins', this.room.user, history)
+      this.room.robot.variables.process('Robin is $robins', this.user, history)
         .should.eql('Robin is Dick Grayson');
       history.should.eql({ vars: { robins: 'Dick Grayson' } });
     });
     it('single quoted variable', function () {
       const history = {};
-      this.room.robot.variables.process('Robin is ${robins}', this.room.user, history) // eslint-disable-line no-template-curly-in-string
+      this.room.robot.variables.process('Robin is ${robins}', this.user, history) // eslint-disable-line no-template-curly-in-string
         .should.eql('Robin is Dick Grayson');
       history.should.eql({ vars: { robins: 'Dick Grayson' } });
     });
     it('dont process escaped variable - quoted', function () {
       const history = {};
-      this.room.robot.variables.process('Robin is \\${robins}', this.room.user, history) // eslint-disable-line no-template-curly-in-string
+      this.room.robot.variables.process('Robin is \\${robins}', this.user, history) // eslint-disable-line no-template-curly-in-string
         .should.eql('Robin is \\${robins}'); // eslint-disable-line no-template-curly-in-string
       history.should.eql({ });
     });
     it('dont process escaped variable - quoted', function () {
       const history = {};
-      this.room.robot.variables.process('Robin is \\$robins', this.room.user, history)
+      this.room.robot.variables.process('Robin is \\$robins', this.user, history)
         .should.eql('Robin is \\$robins');
       history.should.eql({ });
     });
     it('dual same variable', function () {
       const history = {};
-      this.room.robot.variables.process('Robin is $robins $robins', this.room.user, history)
+      this.room.robot.variables.process('Robin is $robins $robins', this.user, history)
         .should.eql('Robin is Dick Grayson Dick Grayson');
       history.should.eql({ vars: { robins: 'Dick Grayson' } });
     });
     it('triple different variable', function () {
       const history = {};
-      this.room.robot.variables.process('$batmans has a sidekick named $robins and a helper called $butlers', this.room.user, history)
+      this.room.robot.variables.process('$batmans has a sidekick named $robins and a helper called $butlers', this.user, history)
         .should.eql('Bruce Wayne has a sidekick named Dick Grayson and a helper called Alfred Pennyworth');
       history.should.eql({ vars: { robins: 'Dick Grayson', batmans: 'Bruce Wayne', butlers: 'Alfred Pennyworth' } });
     });
     it('quad different variable', function () {
       const history = {};
-      this.room.robot.variables.process('$batmans has a sidekick named $robins and a helper called $butlers and fights $villains', this.room.user, history)
+      this.room.robot.variables.process('$batmans has a sidekick named $robins and a helper called $butlers and fights $villains', this.user, history)
         .should.containEql('Bruce Wayne has a sidekick named Dick Grayson and a helper called Alfred Pennyworth and fights');
       history.vars.should.have.property('robins', 'Dick Grayson');
       history.vars.should.have.property('batmans', 'Bruce Wayne');
       history.vars.should.have.property('butlers', 'Alfred Pennyworth');
       history.vars.should.have.property('villains');
+    });
+    it('$who', function () {
+      const history = {};
+      this.room.robot.variables.process('I am $who', this.user, history)
+        .should.eql('I am Commissioner Gordon');
+      history.should.eql({ vars: { who: 'Commissioner Gordon' } });
+    });
+    it('$someone', function () {
+      const history = {};
+      this.room.robot.variables.process('Who does batman protect? $someone', this.user, history)
+        .should.eql('Who does batman protect? Commissioner Gordon');
+      history.should.eql({ vars: { someone: 'Commissioner Gordon' } });
     });
   });
 
