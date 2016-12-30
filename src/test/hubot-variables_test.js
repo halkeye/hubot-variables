@@ -183,7 +183,7 @@ describe('hubot-variables', function () {
     });
   });
 
-  describe('list vars', function () {
+  describe('list vars/set vars', function () {
     beforeEach(function () {
       return Promise.resolve()
         .then(() => this.room.user.say('halkeye', 'create var robins'))
@@ -194,11 +194,13 @@ describe('hubot-variables', function () {
         .then(() => this.room.user.say('halkeye', 'add value actions chop'))
         .then(() => this.room.user.say('halkeye', 'create var digit'))
         .then(() => this.room.user.say('halkeye', 'add value digit 1'))
+        .then(() => this.room.user.say('halkeye', 'var totally_unknown type verb'))
         .then(() => this.room.user.say('halkeye', 'list vars'));
     });
 
     it('responds with the right values', function () {
-      this.room.messages.slice(-2).should.eql([
+      this.room.messages.slice(-3).should.eql([
+        [ 'hubot', "@halkeye Sorry, I don't know of a variable 'totally_unknown'." ],
         [ 'halkeye', 'list vars' ],
         [ 'hubot', '@halkeye robins(n), actions(v), digit' ]
       ]);
