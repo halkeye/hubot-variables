@@ -118,14 +118,14 @@ module.exports = function Export (robot) {
       msg.reply(`Sorry, I don't know of a variable '${varname}'.`);
       return;
     }
-    if (!isForced) {
-      msg.reply("This action cannot be undone  If you want to proceed append a '!'");
+    if (robot.brain.data.variables[varname].values.length && !isForced) {
+      msg.reply("This action cannot be undone. If you want to proceed append a '!'");
       return;
     }
     if (robot.brain.data.variables[varname].values.length) {
-      msg.reply(`Okay, removed variable ${varname} with ${robot.brain.data.variables[varname].values.length} values`);
+      msg.reply(`Okay, removed variable ${varname} with ${robot.brain.data.variables[varname].values.length} values.`);
     } else {
-      msg.reply(`Okay, removed variable ${varname}`);
+      msg.reply(`Okay, removed variable ${varname}.`);
     }
     return delete robot.brain.data.variables[varname];
   });

@@ -61,6 +61,77 @@ describe('hubot-variables', function () {
         });
     });
   });
+  describe('remove var robins', function () {
+    it('non existing var', function () {
+      return Promise.resolve()
+        .then(() => this.room.user.say('halkeye', 'remove var robins'))
+        .then(() => {
+          this.room.messages.slice(-1).should.eql([
+            [ 'hubot', "@halkeye Sorry, I don't know of a variable 'robins'." ]
+          ]);
+          this.room.robot.variables.hasVariable('robins').should.be.true;
+          this.room.robot.brain.data.variables.should.eql({});
+        });
+    });
+    it('basic remove', function () {
+      return Promise.resolve()
+        .then(() => this.room.user.say('halkeye', 'create var robins'))
+        .then(() => this.room.user.say('halkeye', 'remove var robins'))
+        .then(() => {
+          this.room.messages.slice(-1).should.eql([
+            [ 'hubot', '@halkeye Okay, removed variable robins.' ]
+          ]);
+          this.room.robot.variables.hasVariable('robins').should.be.true;
+          this.room.robot.brain.data.variables.should.eql({});
+        });
+    });
+    it('remove fail if values', function () {
+      return Promise.resolve()
+        .then(() => this.room.user.say('halkeye', 'create var robins'))
+        .then(() => this.room.user.say('halkeye', 'add value robins Dick Grayson'))
+        .then(() => this.room.user.say('halkeye', 'remove var robins'))
+        .then(() => {
+          this.room.messages.slice(-1).should.eql([
+            [ 'hubot', "@halkeye This action cannot be undone. If you want to proceed append a '!'" ]
+          ]);
+          this.room.robot.variables.hasVariable('robins').should.be.true;
+          this.room.robot.brain.data.variables.should.eql({
+            robins: {
+              readonly: false,
+              type: 'var',
+              values: [ 'Dick Grayson' ]
+            }
+          });
+        });
+    });
+    it('remove success if values and force', function () {
+      return Promise.resolve()
+        .then(() => this.room.user.say('halkeye', 'create var robins'))
+        .then(() => this.room.user.say('halkeye', 'add value robins Dick Grayson'))
+        .then(() => this.room.user.say('halkeye', 'remove var robins!'))
+        .then(() => {
+          this.room.messages.slice(-1).should.eql([
+            [ 'hubot', '@halkeye Okay, removed variable robins with 1 values.' ]
+          ]);
+          this.room.robot.variables.hasVariable('robins').should.be.true;
+          this.room.robot.brain.data.variables.should.eql({});
+        });
+    });
+    it('remove success if values and force', function () {
+      return Promise.resolve()
+        .then(() => this.room.user.say('halkeye', 'create var robins'))
+        .then(() => this.room.user.say('halkeye', 'add value robins Dick Grayson'))
+        .then(() => this.room.user.say('halkeye', 'add value robins Tim Drake'))
+        .then(() => this.room.user.say('halkeye', 'remove var robins!'))
+        .then(() => {
+          this.room.messages.slice(-1).should.eql([
+            [ 'hubot', '@halkeye Okay, removed variable robins with 2 values.' ]
+          ]);
+          this.room.robot.variables.hasVariable('robins').should.be.true;
+          this.room.robot.brain.data.variables.should.eql({});
+        });
+    });
+  });
 
   describe('add value robins', function () {
     beforeEach(function () {
