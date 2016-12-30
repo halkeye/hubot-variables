@@ -8,3 +8,4 @@ grunt.js
 out/
 .nyc_output/
 coverage/
+.envrc
