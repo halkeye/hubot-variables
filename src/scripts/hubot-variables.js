@@ -50,7 +50,7 @@ module.exports = function Export (robot) {
       if ($1) {
         return $0;
       }
-      let varname = $2 || $3;
+      let varname = ($2 || $3).toLowerCase();
       if (varname === 'who') {
         return [varname, user.name];
       }
@@ -100,7 +100,7 @@ module.exports = function Export (robot) {
   robot.variables.clearAll();
 
   robot.hear(/^create var (\w+)$/, function (msg) {
-    let varname = msg.match[1];
+    let varname = msg.match[1].toLowerCase();
     if (robot.brain.data.variables[varname]) {
       msg.reply(`Sorry, Variable of '${varname}' already exists.`);
       return;
@@ -131,7 +131,7 @@ module.exports = function Export (robot) {
   });
 
   robot.hear(/^add value (\w+) (.*)$/, function (msg) {
-    let varname = msg.match[1];
+    let varname = msg.match[1].toLowerCase();
     let value = msg.match[2];
     let lcvalue = value.toLowerCase();
 
@@ -158,7 +158,7 @@ module.exports = function Export (robot) {
   });
 
   robot.hear(/^remove value (\w+) (.*)$/, function (msg) {
-    let varname = msg.match[1];
+    let varname = msg.match[1].toLowerCase();
     let value = msg.match[2];
     if (!robot.brain.data.variables[varname]) {
       msg.reply(`Sorry, I don't know of a variable '${varname}'.`);
@@ -174,7 +174,7 @@ module.exports = function Export (robot) {
   });
 
   robot.hear(/^var (\w+) type (var|verb|noun)$/, function (msg) {
-    let varname = msg.match[1];
+    let varname = msg.match[1].toLowerCase();
     if (!robot.brain.data.variables[varname]) {
       msg.reply(`Sorry, I don't know of a variable '${varname}'.`);
       return;
@@ -184,7 +184,7 @@ module.exports = function Export (robot) {
   });
 
   robot.hear(/^(un)?protect \$(\w+)$/, function (msg) {
-    let varname = msg.match[2];
+    let varname = msg.match[2].toLowerCase();
     if (!robot.brain.data.variables[varname]) {
       msg.reply(`Sorry, I don't know of a variable '${varname}'.`);
       return;
@@ -198,7 +198,7 @@ module.exports = function Export (robot) {
   });
 
   robot.hear(/^list var (\w+)$/, function (msg) {
-    let varname = msg.match[1];
+    let varname = msg.match[1].toLowerCase();
     if (!robot.brain.data.variables[varname]) {
       msg.reply(`Sorry, I don't know of a variable '${varname}'.`);
       return;

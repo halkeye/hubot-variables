@@ -13,29 +13,52 @@ describe('hubot-variables', function () {
   afterEach(function () { this.room.destroy(); });
 
   describe('create var robins', function () {
-    beforeEach(function () { return this.room.user.say('halkeye', 'create var robins'); });
-
-    it('responds with the right values', function () {
-      this.room.messages.should.eql([
-        [ 'halkeye', 'create var robins' ],
-        [ 'hubot', '@halkeye Okay.' ]
-      ]);
+    it('basic create', function () {
+      return Promise.resolve()
+        .then(() => this.room.user.say('halkeye', 'create var robins'))
+        .then(() => {
+          this.room.messages.slice(-1).should.eql([ [ 'hubot', '@halkeye Okay.' ] ]);
+          this.room.robot.variables.hasVariable('robins').should.be.true;
+          this.room.robot.brain.data.variables.should.eql({
+            robins: {
+              readonly: false,
+              type: 'var',
+              values: [ ]
+            }
+          });
+        });
     });
-    it('has variable robins', function () {
-      this.room.robot.variables.hasVariable('robins');
+    it('existing variable create', function () {
+      return Promise.resolve()
+        .then(() => this.room.user.say('halkeye', 'create var robins'))
+        .then(() => this.room.user.say('halkeye', 'create var robins'))
+        .then(() => {
+          this.room.messages.slice(-1).should.eql([ [ 'hubot', "@halkeye Sorry, Variable of 'robins' already exists." ] ]);
+          this.room.robot.variables.hasVariable('robins').should.be.true;
+          this.room.robot.brain.data.variables.should.eql({
+            robins: {
+              readonly: false,
+              type: 'var',
+              values: [ ]
+            }
+          });
+        });
     });
-    it('responds with the right values', function () {
-      this.room.messages.should.eql([
-        [ 'halkeye', 'create var robins' ],
-        [ 'hubot', '@halkeye Okay.' ]
-      ]);
-      this.room.robot.brain.data.variables.should.eql({
-        robins: {
-          readonly: false,
-          type: 'var',
-          values: [ ]
-        }
-      });
+    it('existing variable create different case', function () {
+      return Promise.resolve()
+        .then(() => this.room.user.say('halkeye', 'create var robins'))
+        .then(() => this.room.user.say('halkeye', 'create var ROBINS'))
+        .then(() => {
+          this.room.messages.slice(-1).should.eql([ [ 'hubot', "@halkeye Sorry, Variable of 'robins' already exists." ] ]);
+          this.room.robot.variables.hasVariable('robins').should.be.true;
+          this.room.robot.brain.data.variables.should.eql({
+            robins: {
+              readonly: false,
+              type: 'var',
+              values: [ ]
+            }
+          });
+        });
     });
   });
 
