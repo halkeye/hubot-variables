@@ -46,14 +46,8 @@ module.exports = function Export (robot) {
       }
       return !variable.readonly;
     }
-    static replacementFunction ($0, $1, $2, $3, user) {
-      if ($1) {
-        return $0;
-      }
-      let varname = ($2 || $3).toLowerCase();
-      if (varname === 'who') {
-        return [varname, user.name];
-      }
+    static replacementFunction (word, varname, user) {
+      if (varname === 'who') { return [varname, user.name]; }
       // # FIXME - pretty sure this doesn't get updated when people leave rooms, it'll have wildly out of date users
       if (varname === 'someone') {
         let recentUsers = [];
@@ -67,15 +61,15 @@ module.exports = function Export (robot) {
         return [varname, recentUsers[Math.floor(Math.random() * recentUsers.length)]];
       }
       let v = robot.brain.data.variables[varname];
-      if (!v) {
-        return $0;
-      }
+      if (!v) { return word; }
       return [varname, v.values[Math.floor(Math.random() * v.values.length)]];
     }
 
     static process (string, user, outputHistory) {
-      return string.replace(variableRE, ($0, $1, $2, $3) => {
-        let rv = this.replacementFunction($0, $1, $2, $3, user);
+      return string.replace(variableRE, (word, slashes, varname, quotedVarName) => {
+        // if slashes/is esacped
+        if (slashes) { return word; }
+        let rv = this.replacementFunction(word, (varname || quotedVarName).toLowerCase(), user);
         if (rv instanceof Array) {
           if (outputHistory) {
             if (!outputHistory.vars) { outputHistory.vars = {}; }
