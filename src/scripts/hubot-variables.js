@@ -26,27 +26,54 @@ module.exports = function Export (robot) {
   let variableRE = /(\\)?(?:\$([a-zA-Z_]\w+)|\${([a-zA-Z_]\w+)})/g;
 
   class Variables {
-    static clearAll () {
-      robot.brain.data.variables = {};
+    getAll () {
+      return robot.brain.get('variables') || {};
     }
 
-    static hasVariable (key) {
-      return key in robot.brain.data.variables;
+    get (varname) {
+      varname = varname.toLowerCase();
+      let variable = this.getAll()[varname];
+      if (!variable) {
+        throw new Error(`Sorry, I don't know of a variable '${varname}'.`);
+      }
+      return variable;
+    }
+    getForEdit (varname, user) {
+      let variable = robot.variables.get(varname);
+      if (!robot.variables.canEditVar(variable, user)) {
+        throw new Error(`Sorry, you don't have permissions to edit '${varname}'.`);
+      }
+      return variable;
     }
 
-    static canEditVar (user, varname) {
-      let variable = robot.brain.data.variables[varname];
+    delete (varname) {
+      let variables = this.getAll();
+      delete variables[varname];
+      robot.brain.set('variables', variables);
+    }
+
+    update (varname, variable) {
+      let variables = this.getAll();
+      variables[varname] = variable;
+      robot.brain.set('variables', variables);
+    }
+
+    hasVariable (key) {
+      return key in this.getAll();
+    }
+
+    canEditVar (variable, user) {
       if (user.roles) {
         if (Array.from(user.roles).includes('edit_variables')) {
           return true;
         }
-        if (Array.from(user.roles).includes(`edit_variable_${varname}`)) {
+        if (Array.from(user.roles).includes(`edit_variable_${variable.name}`)) {
           return true;
         }
       }
       return !variable.readonly;
     }
-    static replacementFunction (word, varname, user) {
+    replacementFunction (word, varname, user) {
       if (varname === 'who') { return [varname, user.name]; }
       // # FIXME - pretty sure this doesn't get updated when people leave rooms, it'll have wildly out of date users
       if (varname === 'someone') {
@@ -60,12 +87,15 @@ module.exports = function Export (robot) {
         }
         return [varname, recentUsers[Math.floor(Math.random() * recentUsers.length)]];
       }
-      let v = robot.brain.data.variables[varname];
-      if (!v) { return word; }
-      return [varname, v.values[Math.floor(Math.random() * v.values.length)]];
+      try {
+        let v = this.get(varname);
+        return [varname, v.values[Math.floor(Math.random() * v.values.length)]];
+      } catch (e) {
+        return word;
+      }
     }
 
-    static process (string, user, outputHistory) {
+    process (string, user, outputHistory) {
       return string.replace(variableRE, (word, slashes, varname, quotedVarName) => {
         // if slashes/is esacped
         if (slashes) { return word; }
@@ -82,7 +112,7 @@ module.exports = function Export (robot) {
     }
   }
 
-  robot.variables = Variables;
+  robot.variables = new Variables();
   if (process.env.ALWAYS_VARIABLE) {
     robot.adapter._oldsend = robot.adapter.send;
     robot.adapter.send = function (envelope, ...strings) {
@@ -90,119 +120,114 @@ module.exports = function Export (robot) {
     };
   }
 
-  // constructor
-  robot.variables.clearAll();
-
   robot.hear(/^create var (\w+)$/, function (msg) {
     let varname = msg.match[1].toLowerCase();
-    if (robot.brain.data.variables[varname]) {
+    try {
+      robot.variables.get(varname);
+      // if it doesn't error, it already exists
       msg.reply(`Sorry, Variable of '${varname}' already exists.`);
-      return;
+    } catch (e) {
+      robot.variables.update(varname, {
+        name: varname, readonly: false, type: 'var', values: []
+      });
+      msg.reply('Okay.');
     }
-    robot.brain.data.variables[varname] = {
-      readonly: false, type: 'var', values: []
-    };
-    return msg.reply('Okay.');
   });
 
   robot.hear(/^remove var (\w+)\s*(!+)?$/, function (msg) {
-    let varname = msg.match[1];
     let isForced = !!msg.match[2];
-    if (!robot.brain.data.variables[varname]) {
-      msg.reply(`Sorry, I don't know of a variable '${varname}'.`);
-      return;
+    try {
+      let variable = robot.variables.getForEdit(msg.match[1], msg.message.user);
+      if (variable.values.length && !isForced) {
+        msg.reply("This action cannot be undone. If you want to proceed append a '!'");
+        return;
+      }
+      if (variable.values.length) {
+        msg.reply(`Okay, removed variable ${variable.name} with ${variable.values.length} values.`);
+      } else {
+        msg.reply(`Okay, removed variable ${variable.name}.`);
+      }
+      robot.variables.delete(variable.name);
+    } catch (e) {
+      msg.reply(e.message);
     }
-    if (robot.brain.data.variables[varname].values.length && !isForced) {
-      msg.reply("This action cannot be undone. If you want to proceed append a '!'");
-      return;
-    }
-    if (robot.brain.data.variables[varname].values.length) {
-      msg.reply(`Okay, removed variable ${varname} with ${robot.brain.data.variables[varname].values.length} values.`);
-    } else {
-      msg.reply(`Okay, removed variable ${varname}.`);
-    }
-    return delete robot.brain.data.variables[varname];
   });
 
   robot.hear(/^add value (\w+) (.*)$/, function (msg) {
-    let varname = msg.match[1].toLowerCase();
     let value = msg.match[2];
     let lcvalue = value.toLowerCase();
 
-    if (!robot.brain.data.variables[varname]) {
-      msg.reply(`Sorry, I don't know of a variable '${varname}'.`);
-      return;
-    }
-    if (!robot.variables.canEditVar(msg.message.user, varname)) {
-      msg.reply(`Sorry, you don't have permissions to edit '${varname}'.`);
-      return;
-    }
     if (value.match(variableRE)) {
       msg.reply('Sorry, no nested values please.');
       return;
     }
-    for (let val of Array.from(robot.brain.data.variables[varname].values)) {
-      if (val.toLowerCase() === lcvalue) {
-        msg.reply('I had it that way!');
-        return;
+
+    try {
+      let variable = robot.variables.getForEdit(msg.match[1], msg.message.user);
+      for (let val of Array.from(variable.values)) {
+        if (val.toLowerCase() === lcvalue) {
+          msg.reply('I had it that way!');
+          return;
+        }
       }
+      robot.variables.update(variable.name, Object.assign(variable, {
+        values: variable.values.concat(value)
+      }));
+      msg.reply('Okay.');
+    } catch (e) {
+      msg.reply(e.message);
     }
-    robot.brain.data.variables[varname].values.push(value);
-    return msg.reply('Okay.');
   });
 
   robot.hear(/^remove value (\w+) (.*)$/, function (msg) {
-    let varname = msg.match[1].toLowerCase();
     let value = msg.match[2];
-    if (!robot.brain.data.variables[varname]) {
-      msg.reply(`Sorry, I don't know of a variable '${varname}'.`);
-      return;
+    try {
+      let variable = robot.variables.getForEdit(msg.match[1], msg.message.user);
+      robot.variables.update(variable.name, Object.assign(variable, {
+        values: variable.values.filter(v => v !== value)
+      }));
+      msg.reply('Okay.');
+    } catch (e) {
+      msg.reply(e.message);
     }
-    if (!robot.variables.canEditVar(msg.message.user, varname)) {
-      msg.reply(`Sorry, you don't have permissions to edit '${varname}'.`);
-      return;
-    }
-    robot.brain.data.variables[varname].values =
-      robot.brain.data.variables[varname].values.filter(v => v !== value);
-    return msg.reply('Okay.');
   });
 
   robot.hear(/^var (\w+) type (var|verb|noun)$/, function (msg) {
-    let varname = msg.match[1].toLowerCase();
-    if (!robot.brain.data.variables[varname]) {
-      msg.reply(`Sorry, I don't know of a variable '${varname}'.`);
-      return;
+    try {
+      let variable = robot.variables.getForEdit(msg.match[1], msg.message.user);
+      robot.variables.update(variable.name, Object.assign(variable, {
+        type: msg.match[2]
+      }));
+      msg.reply('Okay.');
+    } catch (e) {
+      msg.reply(e.message);
     }
-    robot.brain.data.variables[varname].type = msg.match[2];
-    return msg.reply('Okay.');
   });
 
   robot.hear(/^(un)?protect \$(\w+)$/, function (msg) {
-    let varname = msg.match[2].toLowerCase();
-    if (!robot.brain.data.variables[varname]) {
-      msg.reply(`Sorry, I don't know of a variable '${varname}'.`);
-      return;
+    try {
+      let variable = robot.variables.getForEdit(msg.match[2], msg.message.user);
+      robot.variables.update(variable.name, Object.assign(variable, {
+        readonly: !(msg.match[1] === 'un')
+      }));
+      msg.reply('Okay.');
+    } catch (e) {
+      msg.reply(e.message);
     }
-    if (!robot.variables.canEditVar(msg.message.user, varname)) {
-      msg.reply(`Sorry, you don't have permissions to edit '${varname}'.`);
-      return;
-    }
-    robot.brain.data.variables[varname].readonly = !(msg.match[1] === 'un');
-    return msg.reply('Okay.');
   });
 
   robot.hear(/^list var (\w+)$/, function (msg) {
-    let varname = msg.match[1].toLowerCase();
-    if (!robot.brain.data.variables[varname]) {
-      msg.reply(`Sorry, I don't know of a variable '${varname}'.`);
-      return;
+    try {
+      let variable = robot.variables.get(msg.match[1], msg.message.user);
+      msg.reply(variable.values.join(', '));
+    } catch (e) {
+      msg.reply(e.message);
     }
-    msg.reply(robot.brain.data.variables[varname].values.join(', '));
   });
 
   robot.hear(/^list vars$/, function (msg) {
     let ret = [];
-    for (let [varname, v] of entries(robot.brain.data.variables)) {
+    for (let [varname, v] of entries(robot.variables.getAll())) {
       let type = '';
       if (v.type === 'noun') {
         type = '(n)';

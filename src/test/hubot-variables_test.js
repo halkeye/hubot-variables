@@ -8,7 +8,7 @@ const helper = new Helper('../scripts');
 describe('hubot-variables', function () {
   beforeEach(function () {
     this.room = helper.createRoom();
-    this.room.robot.variables.clearAll();
+    // this.room.robot.variables.clearAll();
   });
   afterEach(function () { this.room.destroy(); });
 
@@ -22,14 +22,12 @@ describe('hubot-variables', function () {
         this.user,
         { name: 'The Riddler', room: 'Arkham' } // this user is in a different room
       ];
-      this.room.robot.brain.data.variables = {
-        robins: { readonly: false, type: 'var', values: [ 'Dick Grayson' ] },
-        villains: { readonly: false, type: 'var', values: [ 'Killer Croc', 'Black Mask', 'Clayface', 'Poison Ivy', 'Penguin' ] },
-        weapons: { readonly: false, type: 'var', values: [ 'Grappling Gun', 'Batarang', 'Explosive Gel', 'Shark Spray' ] },
-        digit: { readonly: false, type: 'var', values: [ '1', '2', '3', '4', '5', '6', '7', '8', '9', '0' ] },
-        batmans: { readonly: false, type: 'var', values: [ 'Bruce Wayne' ] },
-        butlers: { readonly: false, type: 'var', values: [ 'Alfred Pennyworth' ] }
-      };
+      this.room.robot.variables.update('robins', { readonly: false, type: 'var', values: [ 'Dick Grayson' ] });
+      this.room.robot.variables.update('villains', { readonly: false, type: 'var', values: [ 'Killer Croc', 'Black Mask', 'Clayface', 'Poison Ivy', 'Penguin' ] });
+      this.room.robot.variables.update('weapons', { readonly: false, type: 'var', values: [ 'Grappling Gun', 'Batarang', 'Explosive Gel', 'Shark Spray' ] });
+      this.room.robot.variables.update('digit', { readonly: false, type: 'var', values: [ '1', '2', '3', '4', '5', '6', '7', '8', '9', '0' ] });
+      this.room.robot.variables.update('batmans', { readonly: false, type: 'var', values: [ 'Bruce Wayne' ] });
+      this.room.robot.variables.update('butlers', { readonly: false, type: 'var', values: [ 'Alfred Pennyworth' ] });
     });
     it('no history', function () {
       this.room.robot.variables.process('Robin is $robins', this.user)
@@ -107,8 +105,9 @@ describe('hubot-variables', function () {
         .then(() => {
           this.room.messages.slice(-1).should.eql([ [ 'hubot', '@halkeye Okay.' ] ]);
           this.room.robot.variables.hasVariable('robins').should.be.true;
-          this.room.robot.brain.data.variables.should.eql({
+          this.room.robot.variables.getAll().should.eql({
             robins: {
+              name: 'robins',
               readonly: false,
               type: 'var',
               values: [ ]
@@ -123,8 +122,9 @@ describe('hubot-variables', function () {
         .then(() => {
           this.room.messages.slice(-1).should.eql([ [ 'hubot', "@halkeye Sorry, Variable of 'robins' already exists." ] ]);
           this.room.robot.variables.hasVariable('robins').should.be.true;
-          this.room.robot.brain.data.variables.should.eql({
+          this.room.robot.variables.getAll().should.eql({
             robins: {
+              name: 'robins',
               readonly: false,
               type: 'var',
               values: [ ]
@@ -139,8 +139,9 @@ describe('hubot-variables', function () {
         .then(() => {
           this.room.messages.slice(-1).should.eql([ [ 'hubot', "@halkeye Sorry, Variable of 'robins' already exists." ] ]);
           this.room.robot.variables.hasVariable('robins').should.be.true;
-          this.room.robot.brain.data.variables.should.eql({
+          this.room.robot.variables.getAll().should.eql({
             robins: {
+              name: 'robins',
               readonly: false,
               type: 'var',
               values: [ ]
@@ -158,7 +159,7 @@ describe('hubot-variables', function () {
             [ 'hubot', "@halkeye Sorry, I don't know of a variable 'robins'." ]
           ]);
           this.room.robot.variables.hasVariable('robins').should.be.true;
-          this.room.robot.brain.data.variables.should.eql({});
+          this.room.robot.variables.getAll().should.eql({});
         });
     });
     it('basic remove', function () {
@@ -170,7 +171,7 @@ describe('hubot-variables', function () {
             [ 'hubot', '@halkeye Okay, removed variable robins.' ]
           ]);
           this.room.robot.variables.hasVariable('robins').should.be.true;
-          this.room.robot.brain.data.variables.should.eql({});
+          this.room.robot.variables.getAll().should.eql({});
         });
     });
     it('remove fail if values', function () {
@@ -183,8 +184,9 @@ describe('hubot-variables', function () {
             [ 'hubot', "@halkeye This action cannot be undone. If you want to proceed append a '!'" ]
           ]);
           this.room.robot.variables.hasVariable('robins').should.be.true;
-          this.room.robot.brain.data.variables.should.eql({
+          this.room.robot.variables.getAll().should.eql({
             robins: {
+              name: 'robins',
               readonly: false,
               type: 'var',
               values: [ 'Dick Grayson' ]
@@ -202,7 +204,7 @@ describe('hubot-variables', function () {
             [ 'hubot', '@halkeye Okay, removed variable robins with 1 values.' ]
           ]);
           this.room.robot.variables.hasVariable('robins').should.be.true;
-          this.room.robot.brain.data.variables.should.eql({});
+          this.room.robot.variables.getAll().should.eql({});
         });
     });
     it('remove success if values and force', function () {
@@ -216,7 +218,7 @@ describe('hubot-variables', function () {
             [ 'hubot', '@halkeye Okay, removed variable robins with 2 values.' ]
           ]);
           this.room.robot.variables.hasVariable('robins').should.be.true;
-          this.room.robot.brain.data.variables.should.eql({});
+          this.room.robot.variables.getAll().should.eql({});
         });
     });
   });
@@ -238,8 +240,9 @@ describe('hubot-variables', function () {
     });
     it('has variable robins', function () {
       this.room.robot.variables.hasVariable('robins');
-      this.room.robot.brain.data.variables.should.eql({
+      this.room.robot.variables.getAll().should.eql({
         robins: {
+          name: 'robins',
           readonly: false,
           type: 'var',
           values: [ 'Dick Grayson' ]
@@ -260,7 +263,7 @@ describe('hubot-variables', function () {
           [ 'halkeye', 'protect $robins' ],
           [ 'hubot', '@halkeye Okay.' ]
         ]);
-        this.room.robot.brain.data.variables.should.eql({ robins: { readonly: true, type: 'var', values: [ ] } });
+        this.room.robot.variables.getAll().should.eql({ robins: { name: 'robins', readonly: true, type: 'var', values: [ ] } });
       });
     });
     describe('nonexisting variable', function () {
@@ -289,7 +292,7 @@ describe('hubot-variables', function () {
           [ 'halkeye', 'protect $robins' ],
           [ 'hubot', "@halkeye Sorry, you don't have permissions to edit 'robins'." ]
         ]);
-        this.room.robot.brain.data.variables.should.eql({ robins: { readonly: true, type: 'var', values: [ ] } });
+        this.room.robot.variables.getAll().should.eql({ robins: { name: 'robins', readonly: true, type: 'var', values: [ ] } });
       });
     });
   });
@@ -307,7 +310,7 @@ describe('hubot-variables', function () {
           [ 'halkeye', 'unprotect $robins' ],
           [ 'hubot', '@halkeye Okay.' ]
         ]);
-        this.room.robot.brain.data.variables.should.eql({ robins: { readonly: false, type: 'var', values: [ ] } });
+        this.room.robot.variables.getAll().should.eql({ robins: { name: 'robins', readonly: false, type: 'var', values: [ ] } });
       });
     });
     describe('nonexisting variable', function () {
@@ -336,7 +339,7 @@ describe('hubot-variables', function () {
           [ 'halkeye', 'unprotect $robins' ],
           [ 'hubot', '@halkeye Okay.' ]
         ]);
-        this.room.robot.brain.data.variables.should.eql({ robins: { readonly: false, type: 'var', values: [ ] } });
+        this.room.robot.variables.getAll().should.eql({ robins: { name: 'robins', readonly: false, type: 'var', values: [ ] } });
       });
     });
   });
@@ -348,7 +351,7 @@ describe('hubot-variables', function () {
           this.room.messages.slice(-1).should.eql([
             [ 'hubot', "@halkeye Sorry, I don't know of a variable 'robins'." ]
           ]);
-          this.room.robot.brain.data.variables.should.not.have.property('robins');
+          this.room.robot.variables.getAll().should.not.have.property('robins');
         });
     });
     it('nested variables', function () {
@@ -359,8 +362,9 @@ describe('hubot-variables', function () {
           this.room.messages.slice(-1).should.eql([
             [ 'hubot', '@halkeye Sorry, no nested values please.' ]
           ]);
-          this.room.robot.brain.data.variables.should.eql({
+          this.room.robot.variables.getAll().should.eql({
             robins: {
+              name: 'robins',
               readonly: false,
               type: 'var',
               values: [ ]
@@ -377,8 +381,9 @@ describe('hubot-variables', function () {
           this.room.messages.slice(-1).should.eql([
             [ 'hubot', '@halkeye Okay.' ]
           ]);
-          this.room.robot.brain.data.variables.should.eql({
+          this.room.robot.variables.getAll().should.eql({
             robins: {
+              name: 'robins',
               readonly: false,
               type: 'noun',
               values: [ 'Dick Grayson' ]
@@ -396,8 +401,9 @@ describe('hubot-variables', function () {
           this.room.messages.slice(-1).should.eql([
             [ 'hubot', '@halkeye I had it that way!' ]
           ]);
-          this.room.robot.brain.data.variables.should.eql({
+          this.room.robot.variables.getAll().should.eql({
             robins: {
+              name: 'robins',
               readonly: false,
               type: 'noun',
               values: [ 'Dick Grayson' ]
@@ -415,8 +421,9 @@ describe('hubot-variables', function () {
           this.room.messages.slice(-1).should.eql([
             [ 'hubot', "@halkeye Sorry, you don't have permissions to edit 'robins'." ]
           ]);
-          this.room.robot.brain.data.variables.should.eql({
+          this.room.robot.variables.getAll().should.eql({
             robins: {
+              name: 'robins',
               readonly: true,
               type: 'noun',
               values: [ ]
@@ -433,7 +440,7 @@ describe('hubot-variables', function () {
           this.room.messages.slice(-1).should.eql([
             [ 'hubot', "@halkeye Sorry, I don't know of a variable 'robins'." ]
           ]);
-          this.room.robot.brain.data.variables.should.not.have.property('robins');
+          this.room.robot.variables.getAll().should.not.have.property('robins');
         });
     });
     it('remove single value', function () {
@@ -446,8 +453,9 @@ describe('hubot-variables', function () {
           this.room.messages.slice(-1).should.eql([
             [ 'hubot', '@halkeye Okay.' ]
           ]);
-          this.room.robot.brain.data.variables.should.eql({
+          this.room.robot.variables.getAll().should.eql({
             robins: {
+              name: 'robins',
               readonly: false,
               type: 'noun',
               values: [ ]
@@ -466,8 +474,9 @@ describe('hubot-variables', function () {
           this.room.messages.slice(-1).should.eql([
             [ 'hubot', "@halkeye Sorry, you don't have permissions to edit 'robins'." ]
           ]);
-          this.room.robot.brain.data.variables.should.eql({
+          this.room.robot.variables.getAll().should.eql({
             robins: {
+              name: 'robins',
               readonly: true,
               type: 'noun',
               values: [ 'Tim Drake' ]
@@ -487,6 +496,28 @@ describe('hubot-variables', function () {
           ]);
         });
     });
+    it('lists protected single value', function () {
+      return Promise.resolve()
+        .then(() => this.room.user.say('halkeye', 'create var robins'))
+        .then(() => this.room.user.say('halkeye', 'var robins type noun'))
+        .then(() => this.room.user.say('halkeye', 'add value robins Dick Grayson'))
+        .then(() => this.room.user.say('halkeye', 'protect $robins'))
+        .then(() => this.room.user.say('halkeye', 'list var robins'))
+        .then(() => {
+          this.room.messages.slice(-2).should.eql([
+            [ 'halkeye', 'list var robins' ],
+            [ 'hubot', '@halkeye Dick Grayson' ]
+          ]);
+          this.room.robot.variables.getAll().should.eql({
+            robins: {
+              name: 'robins',
+              readonly: true,
+              type: 'noun',
+              values: [ 'Dick Grayson' ]
+            }
+          });
+        });
+    });
     it('lists single value', function () {
       return Promise.resolve()
         .then(() => this.room.user.say('halkeye', 'create var robins'))
@@ -498,8 +529,9 @@ describe('hubot-variables', function () {
             [ 'halkeye', 'list var robins' ],
             [ 'hubot', '@halkeye Dick Grayson' ]
           ]);
-          this.room.robot.brain.data.variables.should.eql({
+          this.room.robot.variables.getAll().should.eql({
             robins: {
+              name: 'robins',
               readonly: false,
               type: 'noun',
               values: [ 'Dick Grayson' ]
@@ -522,8 +554,9 @@ describe('hubot-variables', function () {
             [ 'halkeye', 'list var robins' ],
             [ 'hubot', '@halkeye Dick Grayson, Jason Todd, Tim Drake, Stephanie Brown, Damian Wayne' ]
           ]);
-          this.room.robot.brain.data.variables.should.eql({
+          this.room.robot.variables.getAll().should.eql({
             robins: {
+              name: 'robins',
               readonly: false,
               type: 'noun',
               values: [
@@ -560,10 +593,10 @@ describe('hubot-variables', function () {
         [ 'halkeye', 'list vars' ],
         [ 'hubot', '@halkeye robins(n), actions(v), digit' ]
       ]);
-      this.room.robot.brain.data.variables.should.eql({
-        robins: { readonly: false, type: 'noun', values: [ 'Dick Grayson' ] },
-        actions: { readonly: false, type: 'verb', values: [ 'chop' ] },
-        digit: { readonly: false, type: 'var', values: [ '1' ] }
+      this.room.robot.variables.getAll().should.eql({
+        robins: { name: 'robins', readonly: false, type: 'noun', values: [ 'Dick Grayson' ] },
+        actions: { name: 'actions', readonly: false, type: 'verb', values: [ 'chop' ] },
+        digit: { name: 'digit', readonly: false, type: 'var', values: [ '1' ] }
       });
     });
   });
