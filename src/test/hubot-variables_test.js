@@ -158,6 +158,56 @@ describe('hubot-variables', function () {
       });
     });
   });
+  describe('remove value', function () {
+    it('missing value', function () {
+      return Promise.resolve()
+        .then(() => this.room.user.say('halkeye', 'remove value robins Bruce Wayne'))
+        .then(() => {
+          this.room.messages.slice(-1).should.eql([
+            [ 'hubot', "@halkeye Sorry, I don't know of a variable 'robins'." ]
+          ]);
+        });
+    });
+    it('remove single value', function () {
+      return Promise.resolve()
+        .then(() => this.room.user.say('halkeye', 'create var robins'))
+        .then(() => this.room.user.say('halkeye', 'var robins type noun'))
+        .then(() => this.room.user.say('halkeye', 'add value robins Bruce Wayne'))
+        .then(() => this.room.user.say('halkeye', 'remove value robins Bruce Wayne'))
+        .then(() => {
+          this.room.messages.slice(-1).should.eql([
+            [ 'hubot', '@halkeye Okay.' ]
+          ]);
+          this.room.robot.brain.data.variables.should.eql({
+            robins: {
+              readonly: false,
+              type: 'noun',
+              values: [ ]
+            }
+          });
+        });
+    });
+    it('error on protected variable', function () {
+      return Promise.resolve()
+        .then(() => this.room.user.say('halkeye', 'create var robins'))
+        .then(() => this.room.user.say('halkeye', 'var robins type noun'))
+        .then(() => this.room.user.say('halkeye', 'add value robins Tim Drake'))
+        .then(() => this.room.user.say('halkeye', 'protect $robins'))
+        .then(() => this.room.user.say('halkeye', 'remove value robins Bruce Wayne'))
+        .then(() => {
+          this.room.messages.slice(-1).should.eql([
+            [ 'hubot', "@halkeye Sorry, you don't have permissions to edit 'robins'." ]
+          ]);
+          this.room.robot.brain.data.variables.should.eql({
+            robins: {
+              readonly: true,
+              type: 'noun',
+              values: [ 'Tim Drake' ]
+            }
+          });
+        });
+    });
+  });
   describe('list var', function () {
     it('missing value', function () {
       return Promise.resolve()

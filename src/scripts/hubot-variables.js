@@ -168,7 +168,8 @@ module.exports = function Export (robot) {
       msg.reply(`Sorry, you don't have permissions to edit '${varname}'.`);
       return;
     }
-    robot.brain.data.variables[varname].values.remove(value);
+    robot.brain.data.variables[varname].values =
+      robot.brain.data.variables[varname].values.filter(v => v !== value);
     return msg.reply('Okay.');
   });
 
