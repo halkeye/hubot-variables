@@ -1,7 +1,7 @@
 {
   "name": "hubot-variables",
-  "description": "The best project ever.",
-  "version": "0.0.0-development",
+  "description": "Add variables support for hubot",
+  "version": "1.0.0",
   "homepage": "https://github.com/halkeye/hubot-variables",
   "author": {
     "name": "Gavin Mogan",
@@ -23,17 +23,18 @@
   ],
   "main": "index",
   "engines": {
-    "node": ">= 4"
+    "node": ">= 6"
   },
   "scripts": {
     "test:cov-codacy": "nyc --reporter=lcov --reporter=text mocha && cat coverage/lcov.info | codacy-coverage",
     "test:report": "nyc --reporter=lcov --reporter=text mocha",
     "test": "mocha",
     "lint": "eslint .",
-    "semantic-release": "semantic-release pre && npm publish && semantic-release post"
+    "preversion": "conventional-changelog -p angular -i CHANGELOG.md -s"
   },
   "devDependencies": {
     "coffee-script": "^1.12.2",
+    "conventional-changelog-cli": "^1.2.0",
     "eslint": "^3.12.2",
     "eslint-config-standard": "^6.2.1",
     "eslint-plugin-promise": "^3.4.0",
@@ -42,8 +43,7 @@
     "hubot-test-helper": "^1.5.0",
     "mocha": "^3.2.0",
     "nyc": "^10.0.0",
-    "should": "~11.1.1",
-    "semantic-release": "^6.3.2"
+    "should": "~11.1.1"
   },
   "keywords": [
     "hubot",
