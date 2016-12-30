@@ -29,6 +29,13 @@ describe('hubot-variables', function () {
         [ 'halkeye', 'create var robins' ],
         [ 'hubot', '@halkeye Okay.' ]
       ]);
+      this.room.robot.brain.data.variables.should.eql({
+        robins: {
+          readonly: false,
+          type: 'var',
+          values: [ ]
+        }
+      });
     });
   });
 
@@ -49,6 +56,13 @@ describe('hubot-variables', function () {
     });
     it('has variable robins', function () {
       this.room.robot.variables.hasVariable('robins');
+      this.room.robot.brain.data.variables.should.eql({
+        robins: {
+          readonly: false,
+          type: 'var',
+          values: [ 'Dick Grayson' ]
+        }
+      });
     });
   });
   describe('protect var', function () {
@@ -64,6 +78,7 @@ describe('hubot-variables', function () {
           [ 'halkeye', 'protect $robins' ],
           [ 'hubot', '@halkeye Okay.' ]
         ]);
+        this.room.robot.brain.data.variables.should.eql({ robins: { readonly: true, type: 'var', values: [ ] } });
       });
     });
     describe('nonexisting variable', function () {
@@ -92,6 +107,7 @@ describe('hubot-variables', function () {
           [ 'halkeye', 'protect $robins' ],
           [ 'hubot', "@halkeye Sorry, you don't have permissions to edit 'robins'." ]
         ]);
+        this.room.robot.brain.data.variables.should.eql({ robins: { readonly: true, type: 'var', values: [ ] } });
       });
     });
   });
@@ -109,6 +125,7 @@ describe('hubot-variables', function () {
           [ 'halkeye', 'unprotect $robins' ],
           [ 'hubot', '@halkeye Okay.' ]
         ]);
+        this.room.robot.brain.data.variables.should.eql({ robins: { readonly: false, type: 'var', values: [ ] } });
       });
     });
     describe('nonexisting variable', function () {
@@ -137,6 +154,7 @@ describe('hubot-variables', function () {
           [ 'halkeye', 'unprotect $robins' ],
           [ 'hubot', '@halkeye Okay.' ]
         ]);
+        this.room.robot.brain.data.variables.should.eql({ robins: { readonly: false, type: 'var', values: [ ] } });
       });
     });
   });
@@ -162,6 +180,13 @@ describe('hubot-variables', function () {
             [ 'halkeye', 'list var robins' ],
             [ 'hubot', '@halkeye Dick Grayson' ]
           ]);
+          this.room.robot.brain.data.variables.should.eql({
+            robins: {
+              readonly: false,
+              type: 'noun',
+              values: [ 'Dick Grayson' ]
+            }
+          });
         });
     });
     it('lists multiple values', function () {
@@ -179,6 +204,19 @@ describe('hubot-variables', function () {
             [ 'halkeye', 'list var robins' ],
             [ 'hubot', '@halkeye Dick Grayson, Jason Todd, Tim Drake, Stephanie Brown, Damian Wayne' ]
           ]);
+          this.room.robot.brain.data.variables.should.eql({
+            robins: {
+              readonly: false,
+              type: 'noun',
+              values: [
+                'Dick Grayson',
+                'Jason Todd',
+                'Tim Drake',
+                'Stephanie Brown',
+                'Damian Wayne'
+              ]
+            }
+          });
         });
     });
   });
@@ -204,6 +242,11 @@ describe('hubot-variables', function () {
         [ 'halkeye', 'list vars' ],
         [ 'hubot', '@halkeye robins(n), actions(v), digit' ]
       ]);
+      this.room.robot.brain.data.variables.should.eql({
+        robins: { readonly: false, type: 'noun', values: [ 'Dick Grayson' ] },
+        actions: { readonly: false, type: 'verb', values: [ 'chop' ] },
+        digit: { readonly: false, type: 'var', values: [ '1' ] }
+      });
     });
   });
 });
