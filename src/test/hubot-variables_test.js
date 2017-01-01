@@ -101,7 +101,7 @@ describe('hubot-variables', function () {
   describe('create var robins', function () {
     it('basic create', function () {
       return Promise.resolve()
-        .then(() => this.room.user.say('halkeye', 'create var robins'))
+        .then(() => this.room.user.say('halkeye', 'hubot create var robins'))
         .then(() => {
           this.room.messages.slice(-1).should.eql([ [ 'hubot', '@halkeye Okay.' ] ]);
           this.room.robot.variables.hasVariable('robins').should.be.true;
@@ -117,8 +117,8 @@ describe('hubot-variables', function () {
     });
     it('existing variable create', function () {
       return Promise.resolve()
-        .then(() => this.room.user.say('halkeye', 'create var robins'))
-        .then(() => this.room.user.say('halkeye', 'create var robins'))
+        .then(() => this.room.user.say('halkeye', 'hubot create var robins'))
+        .then(() => this.room.user.say('halkeye', 'hubot create var robins'))
         .then(() => {
           this.room.messages.slice(-1).should.eql([ [ 'hubot', "@halkeye Sorry, Variable of 'robins' already exists." ] ]);
           this.room.robot.variables.hasVariable('robins').should.be.true;
@@ -134,8 +134,8 @@ describe('hubot-variables', function () {
     });
     it('existing variable create different case', function () {
       return Promise.resolve()
-        .then(() => this.room.user.say('halkeye', 'create var robins'))
-        .then(() => this.room.user.say('halkeye', 'create var ROBINS'))
+        .then(() => this.room.user.say('halkeye', 'hubot create var robins'))
+        .then(() => this.room.user.say('halkeye', 'hubot create var ROBINS'))
         .then(() => {
           this.room.messages.slice(-1).should.eql([ [ 'hubot', "@halkeye Sorry, Variable of 'robins' already exists." ] ]);
           this.room.robot.variables.hasVariable('robins').should.be.true;
@@ -153,7 +153,7 @@ describe('hubot-variables', function () {
   describe('remove var robins', function () {
     it('non existing var', function () {
       return Promise.resolve()
-        .then(() => this.room.user.say('halkeye', 'remove var robins'))
+        .then(() => this.room.user.say('halkeye', 'hubot remove var robins'))
         .then(() => {
           this.room.messages.slice(-1).should.eql([
             [ 'hubot', "@halkeye Sorry, I don't know of a variable 'robins'." ]
@@ -164,8 +164,8 @@ describe('hubot-variables', function () {
     });
     it('basic remove', function () {
       return Promise.resolve()
-        .then(() => this.room.user.say('halkeye', 'create var robins'))
-        .then(() => this.room.user.say('halkeye', 'remove var robins'))
+        .then(() => this.room.user.say('halkeye', 'hubot create var robins'))
+        .then(() => this.room.user.say('halkeye', 'hubot remove var robins'))
         .then(() => {
           this.room.messages.slice(-1).should.eql([
             [ 'hubot', '@halkeye Okay, removed variable robins.' ]
@@ -176,9 +176,9 @@ describe('hubot-variables', function () {
     });
     it('remove fail if values', function () {
       return Promise.resolve()
-        .then(() => this.room.user.say('halkeye', 'create var robins'))
-        .then(() => this.room.user.say('halkeye', 'add value robins Dick Grayson'))
-        .then(() => this.room.user.say('halkeye', 'remove var robins'))
+        .then(() => this.room.user.say('halkeye', 'hubot create var robins'))
+        .then(() => this.room.user.say('halkeye', 'hubot add value robins Dick Grayson'))
+        .then(() => this.room.user.say('halkeye', 'hubot remove var robins'))
         .then(() => {
           this.room.messages.slice(-1).should.eql([
             [ 'hubot', "@halkeye This action cannot be undone. If you want to proceed append a '!'" ]
@@ -196,9 +196,9 @@ describe('hubot-variables', function () {
     });
     it('remove success if values and force', function () {
       return Promise.resolve()
-        .then(() => this.room.user.say('halkeye', 'create var robins'))
-        .then(() => this.room.user.say('halkeye', 'add value robins Dick Grayson'))
-        .then(() => this.room.user.say('halkeye', 'remove var robins!'))
+        .then(() => this.room.user.say('halkeye', 'hubot create var robins'))
+        .then(() => this.room.user.say('halkeye', 'hubot add value robins Dick Grayson'))
+        .then(() => this.room.user.say('halkeye', 'hubot remove var robins!'))
         .then(() => {
           this.room.messages.slice(-1).should.eql([
             [ 'hubot', '@halkeye Okay, removed variable robins with 1 values.' ]
@@ -209,10 +209,10 @@ describe('hubot-variables', function () {
     });
     it('remove success if values and force', function () {
       return Promise.resolve()
-        .then(() => this.room.user.say('halkeye', 'create var robins'))
-        .then(() => this.room.user.say('halkeye', 'add value robins Dick Grayson'))
-        .then(() => this.room.user.say('halkeye', 'add value robins Tim Drake'))
-        .then(() => this.room.user.say('halkeye', 'remove var robins!'))
+        .then(() => this.room.user.say('halkeye', 'hubot create var robins'))
+        .then(() => this.room.user.say('halkeye', 'hubot add value robins Dick Grayson'))
+        .then(() => this.room.user.say('halkeye', 'hubot add value robins Tim Drake'))
+        .then(() => this.room.user.say('halkeye', 'hubot remove var robins!'))
         .then(() => {
           this.room.messages.slice(-1).should.eql([
             [ 'hubot', '@halkeye Okay, removed variable robins with 2 values.' ]
@@ -225,16 +225,16 @@ describe('hubot-variables', function () {
 
   describe('add value robins', function () {
     beforeEach(function () {
-      return this.room.user.say('halkeye', 'create var robins').then(
-        () => this.room.user.say('halkeye', 'add value robins Dick Grayson')
+      return this.room.user.say('halkeye', 'hubot create var robins').then(
+        () => this.room.user.say('halkeye', 'hubot add value robins Dick Grayson')
       );
     });
 
     it('responds with the right values', function () {
       this.room.messages.should.eql([
-        [ 'halkeye', 'create var robins' ],
+        [ 'halkeye', 'hubot create var robins' ],
         [ 'hubot', '@halkeye Okay.' ],
-        [ 'halkeye', 'add value robins Dick Grayson' ],
+        [ 'halkeye', 'hubot add value robins Dick Grayson' ],
         [ 'hubot', '@halkeye Okay.' ]
       ]);
     });
@@ -254,13 +254,13 @@ describe('hubot-variables', function () {
     describe('existing variable', function () {
       beforeEach(function () {
         return Promise.resolve()
-          .then(() => this.room.user.say('halkeye', 'create var robins'))
-          .then(() => this.room.user.say('halkeye', 'protect $robins'));
+          .then(() => this.room.user.say('halkeye', 'hubot create var robins'))
+          .then(() => this.room.user.say('halkeye', 'hubot protect $robins'));
       });
 
       it('responds with the right values', function () {
         this.room.messages.slice(-2).should.eql([
-          [ 'halkeye', 'protect $robins' ],
+          [ 'halkeye', 'hubot protect $robins' ],
           [ 'hubot', '@halkeye Okay.' ]
         ]);
         this.room.robot.variables.getAll().should.eql({ robins: { name: 'robins', readonly: true, type: 'var', values: [ ] } });
@@ -269,12 +269,12 @@ describe('hubot-variables', function () {
     describe('nonexisting variable', function () {
       beforeEach(function () {
         return Promise.resolve()
-          .then(() => this.room.user.say('halkeye', 'protect $robins'));
+          .then(() => this.room.user.say('halkeye', 'hubot protect $robins'));
       });
 
       it('responds with the right values', function () {
         this.room.messages.slice(-2).should.eql([
-          [ 'halkeye', 'protect $robins' ],
+          [ 'halkeye', 'hubot protect $robins' ],
           [ 'hubot', "@halkeye Sorry, I don't know of a variable 'robins'." ]
         ]);
       });
@@ -282,14 +282,14 @@ describe('hubot-variables', function () {
     describe('already protected', function () {
       beforeEach(function () {
         return Promise.resolve()
-          .then(() => this.room.user.say('halkeye', 'create var robins'))
-          .then(() => this.room.user.say('halkeye', 'protect $robins'))
-          .then(() => this.room.user.say('halkeye', 'protect $robins'));
+          .then(() => this.room.user.say('halkeye', 'hubot create var robins'))
+          .then(() => this.room.user.say('halkeye', 'hubot protect $robins'))
+          .then(() => this.room.user.say('halkeye', 'hubot protect $robins'));
       });
 
       it('responds with the right values', function () {
         this.room.messages.slice(-2).should.eql([
-          [ 'halkeye', 'protect $robins' ],
+          [ 'halkeye', 'hubot protect $robins' ],
           [ 'hubot', "@halkeye Sorry, you don't have permissions to edit 'robins'." ]
         ]);
         this.room.robot.variables.getAll().should.eql({ robins: { name: 'robins', readonly: true, type: 'var', values: [ ] } });
@@ -301,13 +301,13 @@ describe('hubot-variables', function () {
     describe('existing variable', function () {
       beforeEach(function () {
         return Promise.resolve()
-          .then(() => this.room.user.say('halkeye', 'create var robins'))
-          .then(() => this.room.user.say('halkeye', 'unprotect $robins'));
+          .then(() => this.room.user.say('halkeye', 'hubot create var robins'))
+          .then(() => this.room.user.say('halkeye', 'hubot unprotect $robins'));
       });
 
       it('responds with the right values', function () {
         this.room.messages.slice(-2).should.eql([
-          [ 'halkeye', 'unprotect $robins' ],
+          [ 'halkeye', 'hubot unprotect $robins' ],
           [ 'hubot', '@halkeye Okay.' ]
         ]);
         this.room.robot.variables.getAll().should.eql({ robins: { name: 'robins', readonly: false, type: 'var', values: [ ] } });
@@ -316,12 +316,12 @@ describe('hubot-variables', function () {
     describe('nonexisting variable', function () {
       beforeEach(function () {
         return Promise.resolve()
-          .then(() => this.room.user.say('halkeye', 'unprotect $robins'));
+          .then(() => this.room.user.say('halkeye', 'hubot unprotect $robins'));
       });
 
       it('responds with the right values', function () {
         this.room.messages.slice(-2).should.eql([
-          [ 'halkeye', 'unprotect $robins' ],
+          [ 'halkeye', 'hubot unprotect $robins' ],
           [ 'hubot', "@halkeye Sorry, I don't know of a variable 'robins'." ]
         ]);
       });
@@ -329,14 +329,14 @@ describe('hubot-variables', function () {
     describe('already unprotected', function () {
       beforeEach(function () {
         return Promise.resolve()
-          .then(() => this.room.user.say('halkeye', 'create var robins'))
-          .then(() => this.room.user.say('halkeye', 'unprotect $robins'))
-          .then(() => this.room.user.say('halkeye', 'unprotect $robins'));
+          .then(() => this.room.user.say('halkeye', 'hubot create var robins'))
+          .then(() => this.room.user.say('halkeye', 'hubot unprotect $robins'))
+          .then(() => this.room.user.say('halkeye', 'hubot unprotect $robins'));
       });
 
       it('responds with the right values', function () {
         this.room.messages.slice(-2).should.eql([
-          [ 'halkeye', 'unprotect $robins' ],
+          [ 'halkeye', 'hubot unprotect $robins' ],
           [ 'hubot', '@halkeye Okay.' ]
         ]);
         this.room.robot.variables.getAll().should.eql({ robins: { name: 'robins', readonly: false, type: 'var', values: [ ] } });
@@ -346,7 +346,7 @@ describe('hubot-variables', function () {
   describe('add value', function () {
     it('missing value', function () {
       return Promise.resolve()
-        .then(() => this.room.user.say('halkeye', 'add value robins Bruce Wayne'))
+        .then(() => this.room.user.say('halkeye', 'hubot add value robins Bruce Wayne'))
         .then(() => {
           this.room.messages.slice(-1).should.eql([
             [ 'hubot', "@halkeye Sorry, I don't know of a variable 'robins'." ]
@@ -356,8 +356,8 @@ describe('hubot-variables', function () {
     });
     it('nested variables', function () {
       return Promise.resolve()
-        .then(() => this.room.user.say('halkeye', 'create var robins'))
-        .then(() => this.room.user.say('halkeye', 'add value robins $nightwings'))
+        .then(() => this.room.user.say('halkeye', 'hubot create var robins'))
+        .then(() => this.room.user.say('halkeye', 'hubot add value robins $nightwings'))
         .then(() => {
           this.room.messages.slice(-1).should.eql([
             [ 'hubot', '@halkeye Sorry, no nested values please.' ]
@@ -374,9 +374,9 @@ describe('hubot-variables', function () {
     });
     it('add single value', function () {
       return Promise.resolve()
-        .then(() => this.room.user.say('halkeye', 'create var robins'))
-        .then(() => this.room.user.say('halkeye', 'var robins type noun'))
-        .then(() => this.room.user.say('halkeye', 'add value robins Dick Grayson'))
+        .then(() => this.room.user.say('halkeye', 'hubot create var robins'))
+        .then(() => this.room.user.say('halkeye', 'hubot var robins type noun'))
+        .then(() => this.room.user.say('halkeye', 'hubot add value robins Dick Grayson'))
         .then(() => {
           this.room.messages.slice(-1).should.eql([
             [ 'hubot', '@halkeye Okay.' ]
@@ -393,10 +393,10 @@ describe('hubot-variables', function () {
     });
     it('duplicated variable (lowercase)', function () {
       return Promise.resolve()
-        .then(() => this.room.user.say('halkeye', 'create var robins'))
-        .then(() => this.room.user.say('halkeye', 'var robins type noun'))
-        .then(() => this.room.user.say('halkeye', 'add value robins Dick Grayson'))
-        .then(() => this.room.user.say('halkeye', 'add value robins dick grayson'))
+        .then(() => this.room.user.say('halkeye', 'hubot create var robins'))
+        .then(() => this.room.user.say('halkeye', 'hubot var robins type noun'))
+        .then(() => this.room.user.say('halkeye', 'hubot add value robins Dick Grayson'))
+        .then(() => this.room.user.say('halkeye', 'hubot add value robins dick grayson'))
         .then(() => {
           this.room.messages.slice(-1).should.eql([
             [ 'hubot', '@halkeye I had it that way!' ]
@@ -413,10 +413,10 @@ describe('hubot-variables', function () {
     });
     it('error on protected variable', function () {
       return Promise.resolve()
-        .then(() => this.room.user.say('halkeye', 'create var robins'))
-        .then(() => this.room.user.say('halkeye', 'var robins type noun'))
-        .then(() => this.room.user.say('halkeye', 'protect $robins'))
-        .then(() => this.room.user.say('halkeye', 'add value robins Tim Drake'))
+        .then(() => this.room.user.say('halkeye', 'hubot create var robins'))
+        .then(() => this.room.user.say('halkeye', 'hubot var robins type noun'))
+        .then(() => this.room.user.say('halkeye', 'hubot protect $robins'))
+        .then(() => this.room.user.say('halkeye', 'hubot add value robins Tim Drake'))
         .then(() => {
           this.room.messages.slice(-1).should.eql([
             [ 'hubot', "@halkeye Sorry, you don't have permissions to edit 'robins'." ]
@@ -435,7 +435,7 @@ describe('hubot-variables', function () {
   describe('remove value', function () {
     it('missing value', function () {
       return Promise.resolve()
-        .then(() => this.room.user.say('halkeye', 'remove value robins Bruce Wayne'))
+        .then(() => this.room.user.say('halkeye', 'hubot remove value robins Bruce Wayne'))
         .then(() => {
           this.room.messages.slice(-1).should.eql([
             [ 'hubot', "@halkeye Sorry, I don't know of a variable 'robins'." ]
@@ -445,10 +445,10 @@ describe('hubot-variables', function () {
     });
     it('remove single value', function () {
       return Promise.resolve()
-        .then(() => this.room.user.say('halkeye', 'create var robins'))
-        .then(() => this.room.user.say('halkeye', 'var robins type noun'))
-        .then(() => this.room.user.say('halkeye', 'add value robins Bruce Wayne'))
-        .then(() => this.room.user.say('halkeye', 'remove value robins Bruce Wayne'))
+        .then(() => this.room.user.say('halkeye', 'hubot create var robins'))
+        .then(() => this.room.user.say('halkeye', 'hubot var robins type noun'))
+        .then(() => this.room.user.say('halkeye', 'hubot add value robins Bruce Wayne'))
+        .then(() => this.room.user.say('halkeye', 'hubot remove value robins Bruce Wayne'))
         .then(() => {
           this.room.messages.slice(-1).should.eql([
             [ 'hubot', '@halkeye Okay.' ]
@@ -465,11 +465,11 @@ describe('hubot-variables', function () {
     });
     it('error on protected variable', function () {
       return Promise.resolve()
-        .then(() => this.room.user.say('halkeye', 'create var robins'))
-        .then(() => this.room.user.say('halkeye', 'var robins type noun'))
-        .then(() => this.room.user.say('halkeye', 'add value robins Tim Drake'))
-        .then(() => this.room.user.say('halkeye', 'protect $robins'))
-        .then(() => this.room.user.say('halkeye', 'remove value robins Bruce Wayne'))
+        .then(() => this.room.user.say('halkeye', 'hubot create var robins'))
+        .then(() => this.room.user.say('halkeye', 'hubot var robins type noun'))
+        .then(() => this.room.user.say('halkeye', 'hubot add value robins Tim Drake'))
+        .then(() => this.room.user.say('halkeye', 'hubot protect $robins'))
+        .then(() => this.room.user.say('halkeye', 'hubot remove value robins Bruce Wayne'))
         .then(() => {
           this.room.messages.slice(-1).should.eql([
             [ 'hubot', "@halkeye Sorry, you don't have permissions to edit 'robins'." ]
@@ -488,24 +488,24 @@ describe('hubot-variables', function () {
   describe('list var', function () {
     it('missing value', function () {
       return Promise.resolve()
-        .then(() => this.room.user.say('halkeye', 'list var robins'))
+        .then(() => this.room.user.say('halkeye', 'hubot list var robins'))
         .then(() => {
           this.room.messages.slice(-2).should.eql([
-            [ 'halkeye', 'list var robins' ],
+            [ 'halkeye', 'hubot list var robins' ],
             [ 'hubot', "@halkeye Sorry, I don't know of a variable 'robins'." ]
           ]);
         });
     });
     it('lists protected single value', function () {
       return Promise.resolve()
-        .then(() => this.room.user.say('halkeye', 'create var robins'))
-        .then(() => this.room.user.say('halkeye', 'var robins type noun'))
-        .then(() => this.room.user.say('halkeye', 'add value robins Dick Grayson'))
-        .then(() => this.room.user.say('halkeye', 'protect $robins'))
-        .then(() => this.room.user.say('halkeye', 'list var robins'))
+        .then(() => this.room.user.say('halkeye', 'hubot create var robins'))
+        .then(() => this.room.user.say('halkeye', 'hubot var robins type noun'))
+        .then(() => this.room.user.say('halkeye', 'hubot add value robins Dick Grayson'))
+        .then(() => this.room.user.say('halkeye', 'hubot protect $robins'))
+        .then(() => this.room.user.say('halkeye', 'hubot list var robins'))
         .then(() => {
           this.room.messages.slice(-2).should.eql([
-            [ 'halkeye', 'list var robins' ],
+            [ 'halkeye', 'hubot list var robins' ],
             [ 'hubot', '@halkeye Dick Grayson' ]
           ]);
           this.room.robot.variables.getAll().should.eql({
@@ -520,13 +520,13 @@ describe('hubot-variables', function () {
     });
     it('lists single value', function () {
       return Promise.resolve()
-        .then(() => this.room.user.say('halkeye', 'create var robins'))
-        .then(() => this.room.user.say('halkeye', 'var robins type noun'))
-        .then(() => this.room.user.say('halkeye', 'add value robins Dick Grayson'))
-        .then(() => this.room.user.say('halkeye', 'list var robins'))
+        .then(() => this.room.user.say('halkeye', 'hubot create var robins'))
+        .then(() => this.room.user.say('halkeye', 'hubot var robins type noun'))
+        .then(() => this.room.user.say('halkeye', 'hubot add value robins Dick Grayson'))
+        .then(() => this.room.user.say('halkeye', 'hubot list var robins'))
         .then(() => {
           this.room.messages.slice(-2).should.eql([
-            [ 'halkeye', 'list var robins' ],
+            [ 'halkeye', 'hubot list var robins' ],
             [ 'hubot', '@halkeye Dick Grayson' ]
           ]);
           this.room.robot.variables.getAll().should.eql({
@@ -541,17 +541,17 @@ describe('hubot-variables', function () {
     });
     it('lists multiple values', function () {
       return Promise.resolve()
-        .then(() => this.room.user.say('halkeye', 'create var robins'))
-        .then(() => this.room.user.say('halkeye', 'var robins type noun'))
-        .then(() => this.room.user.say('halkeye', 'add value robins Dick Grayson'))
-        .then(() => this.room.user.say('halkeye', 'add value robins Jason Todd'))
-        .then(() => this.room.user.say('halkeye', 'add value robins Tim Drake'))
-        .then(() => this.room.user.say('halkeye', 'add value robins Stephanie Brown'))
-        .then(() => this.room.user.say('halkeye', 'add value robins Damian Wayne'))
-        .then(() => this.room.user.say('halkeye', 'list var robins'))
+        .then(() => this.room.user.say('halkeye', 'hubot create var robins'))
+        .then(() => this.room.user.say('halkeye', 'hubot var robins type noun'))
+        .then(() => this.room.user.say('halkeye', 'hubot add value robins Dick Grayson'))
+        .then(() => this.room.user.say('halkeye', 'hubot add value robins Jason Todd'))
+        .then(() => this.room.user.say('halkeye', 'hubot add value robins Tim Drake'))
+        .then(() => this.room.user.say('halkeye', 'hubot add value robins Stephanie Brown'))
+        .then(() => this.room.user.say('halkeye', 'hubot add value robins Damian Wayne'))
+        .then(() => this.room.user.say('halkeye', 'hubot list var robins'))
         .then(() => {
           this.room.messages.slice(-2).should.eql([
-            [ 'halkeye', 'list var robins' ],
+            [ 'halkeye', 'hubot list var robins' ],
             [ 'hubot', '@halkeye Dick Grayson, Jason Todd, Tim Drake, Stephanie Brown, Damian Wayne' ]
           ]);
           this.room.robot.variables.getAll().should.eql({
@@ -575,22 +575,22 @@ describe('hubot-variables', function () {
   describe('list vars/set vars', function () {
     beforeEach(function () {
       return Promise.resolve()
-        .then(() => this.room.user.say('halkeye', 'create var robins'))
-        .then(() => this.room.user.say('halkeye', 'var robins type noun'))
-        .then(() => this.room.user.say('halkeye', 'add value robins Dick Grayson'))
-        .then(() => this.room.user.say('halkeye', 'create var actions'))
-        .then(() => this.room.user.say('halkeye', 'var actions type verb'))
-        .then(() => this.room.user.say('halkeye', 'add value actions chop'))
-        .then(() => this.room.user.say('halkeye', 'create var digit'))
-        .then(() => this.room.user.say('halkeye', 'add value digit 1'))
-        .then(() => this.room.user.say('halkeye', 'var totally_unknown type verb'))
-        .then(() => this.room.user.say('halkeye', 'list vars'));
+        .then(() => this.room.user.say('halkeye', 'hubot create var robins'))
+        .then(() => this.room.user.say('halkeye', 'hubot var robins type noun'))
+        .then(() => this.room.user.say('halkeye', 'hubot add value robins Dick Grayson'))
+        .then(() => this.room.user.say('halkeye', 'hubot create var actions'))
+        .then(() => this.room.user.say('halkeye', 'hubot var actions type verb'))
+        .then(() => this.room.user.say('halkeye', 'hubot add value actions chop'))
+        .then(() => this.room.user.say('halkeye', 'hubot create var digit'))
+        .then(() => this.room.user.say('halkeye', 'hubot add value digit 1'))
+        .then(() => this.room.user.say('halkeye', 'hubot var totally_unknown type verb'))
+        .then(() => this.room.user.say('halkeye', 'hubot list vars'));
     });
 
     it('responds with the right values', function () {
       this.room.messages.slice(-3).should.eql([
         [ 'hubot', "@halkeye Sorry, I don't know of a variable 'totally_unknown'." ],
-        [ 'halkeye', 'list vars' ],
+        [ 'halkeye', 'hubot list vars' ],
         [ 'hubot', '@halkeye robins(n), actions(v), digit' ]
       ]);
       this.room.robot.variables.getAll().should.eql({

@@ -120,7 +120,7 @@ module.exports = function Export (robot) {
     };
   }
 
-  robot.hear(/^create var (\w+)$/, function (msg) {
+  robot.respond(/create var (\w+)$/, function (msg) {
     let varname = msg.match[1].toLowerCase();
     try {
       robot.variables.get(varname);
@@ -134,7 +134,7 @@ module.exports = function Export (robot) {
     }
   });
 
-  robot.hear(/^remove var (\w+)\s*(!+)?$/, function (msg) {
+  robot.respond(/remove var (\w+)\s*(!+)?$/, function (msg) {
     let isForced = !!msg.match[2];
     try {
       let variable = robot.variables.getForEdit(msg.match[1], msg.message.user);
@@ -153,7 +153,7 @@ module.exports = function Export (robot) {
     }
   });
 
-  robot.hear(/^add value (\w+) (.*)$/, function (msg) {
+  robot.respond(/add value (\w+) (.*)$/, function (msg) {
     let value = msg.match[2];
     let lcvalue = value.toLowerCase();
 
@@ -179,7 +179,7 @@ module.exports = function Export (robot) {
     }
   });
 
-  robot.hear(/^remove value (\w+) (.*)$/, function (msg) {
+  robot.respond(/remove value (\w+) (.*)$/, function (msg) {
     let value = msg.match[2];
     try {
       let variable = robot.variables.getForEdit(msg.match[1], msg.message.user);
@@ -192,7 +192,7 @@ module.exports = function Export (robot) {
     }
   });
 
-  robot.hear(/^var (\w+) type (var|verb|noun)$/, function (msg) {
+  robot.respond(/var (\w+) type (var|verb|noun)$/, function (msg) {
     try {
       let variable = robot.variables.getForEdit(msg.match[1], msg.message.user);
       robot.variables.update(variable.name, Object.assign(variable, {
@@ -204,7 +204,7 @@ module.exports = function Export (robot) {
     }
   });
 
-  robot.hear(/^(un)?protect \$(\w+)$/, function (msg) {
+  robot.respond(/(un)?protect \$(\w+)$/, function (msg) {
     try {
       let variable = robot.variables.getForEdit(msg.match[2], msg.message.user);
       robot.variables.update(variable.name, Object.assign(variable, {
@@ -216,7 +216,7 @@ module.exports = function Export (robot) {
     }
   });
 
-  robot.hear(/^list var (\w+)$/, function (msg) {
+  robot.respond(/list var (\w+)$/, function (msg) {
     try {
       let variable = robot.variables.get(msg.match[1], msg.message.user);
       msg.reply(variable.values.join(', '));
@@ -225,7 +225,7 @@ module.exports = function Export (robot) {
     }
   });
 
-  robot.hear(/^list vars$/, function (msg) {
+  robot.respond(/list vars$/, function (msg) {
     let ret = [];
     for (let [varname, v] of entries(robot.variables.getAll())) {
       let type = '';
