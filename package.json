@@ -1,7 +1,7 @@
 {
   "name": "hubot-variables",
   "description": "Add variables support for hubot",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "homepage": "https://github.com/halkeye/hubot-variables",
   "author": {
     "name": "Gavin Mogan",
