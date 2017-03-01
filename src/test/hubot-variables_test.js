@@ -104,7 +104,7 @@ describe('hubot-variables', function () {
         .then(() => this.room.user.say('halkeye', 'hubot create var robins'))
         .then(() => {
           this.room.messages.slice(-1).should.eql([ [ 'hubot', '@halkeye Okay.' ] ]);
-          this.room.robot.variables.hasVariable('robins').should.be.true;
+          this.room.robot.variables.hasVariable('robins').should.eql(true);
           this.room.robot.variables.getAll().should.eql({
             robins: {
               name: 'robins',
@@ -121,7 +121,7 @@ describe('hubot-variables', function () {
         .then(() => this.room.user.say('halkeye', 'hubot create var robins'))
         .then(() => {
           this.room.messages.slice(-1).should.eql([ [ 'hubot', "@halkeye Sorry, Variable of 'robins' already exists." ] ]);
-          this.room.robot.variables.hasVariable('robins').should.be.true;
+          this.room.robot.variables.hasVariable('robins').should.eql(true);
           this.room.robot.variables.getAll().should.eql({
             robins: {
               name: 'robins',
@@ -138,7 +138,7 @@ describe('hubot-variables', function () {
         .then(() => this.room.user.say('halkeye', 'hubot create var ROBINS'))
         .then(() => {
           this.room.messages.slice(-1).should.eql([ [ 'hubot', "@halkeye Sorry, Variable of 'robins' already exists." ] ]);
-          this.room.robot.variables.hasVariable('robins').should.be.true;
+          this.room.robot.variables.hasVariable('robins').should.eql(true);
           this.room.robot.variables.getAll().should.eql({
             robins: {
               name: 'robins',
@@ -158,7 +158,7 @@ describe('hubot-variables', function () {
           this.room.messages.slice(-1).should.eql([
             [ 'hubot', "@halkeye Sorry, I don't know of a variable 'robins'." ]
           ]);
-          this.room.robot.variables.hasVariable('robins').should.be.true;
+          this.room.robot.variables.hasVariable('robins').should.eql(true);
           this.room.robot.variables.getAll().should.eql({});
         });
     });
@@ -170,7 +170,7 @@ describe('hubot-variables', function () {
           this.room.messages.slice(-1).should.eql([
             [ 'hubot', '@halkeye Okay, removed variable robins.' ]
           ]);
-          this.room.robot.variables.hasVariable('robins').should.be.true;
+          this.room.robot.variables.hasVariable('robins').should.eql(true);
           this.room.robot.variables.getAll().should.eql({});
         });
     });
@@ -183,7 +183,7 @@ describe('hubot-variables', function () {
           this.room.messages.slice(-1).should.eql([
             [ 'hubot', "@halkeye This action cannot be undone. If you want to proceed append a '!'" ]
           ]);
-          this.room.robot.variables.hasVariable('robins').should.be.true;
+          this.room.robot.variables.hasVariable('robins').should.eql(true);
           this.room.robot.variables.getAll().should.eql({
             robins: {
               name: 'robins',
@@ -203,7 +203,7 @@ describe('hubot-variables', function () {
           this.room.messages.slice(-1).should.eql([
             [ 'hubot', '@halkeye Okay, removed variable robins with 1 values.' ]
           ]);
-          this.room.robot.variables.hasVariable('robins').should.be.true;
+          this.room.robot.variables.hasVariable('robins').should.eql(true);
           this.room.robot.variables.getAll().should.eql({});
         });
     });
@@ -217,7 +217,7 @@ describe('hubot-variables', function () {
           this.room.messages.slice(-1).should.eql([
             [ 'hubot', '@halkeye Okay, removed variable robins with 2 values.' ]
           ]);
-          this.room.robot.variables.hasVariable('robins').should.be.true;
+          this.room.robot.variables.hasVariable('robins').should.eql(true);
           this.room.robot.variables.getAll().should.eql({});
         });
     });
@@ -601,4 +601,3 @@ describe('hubot-variables', function () {
     });
   });
 });
-
