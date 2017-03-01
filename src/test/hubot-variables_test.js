@@ -158,7 +158,7 @@ describe('hubot-variables', function () {
           this.room.messages.slice(-1).should.eql([
             [ 'hubot', "@halkeye Sorry, I don't know of a variable 'robins'." ]
           ]);
-          this.room.robot.variables.hasVariable('robins').should.eql(true);
+          this.room.robot.variables.hasVariable('robins').should.eql(false);
           this.room.robot.variables.getAll().should.eql({});
         });
     });
@@ -170,7 +170,7 @@ describe('hubot-variables', function () {
           this.room.messages.slice(-1).should.eql([
             [ 'hubot', '@halkeye Okay, removed variable robins.' ]
           ]);
-          this.room.robot.variables.hasVariable('robins').should.eql(true);
+          this.room.robot.variables.hasVariable('robins').should.eql(false);
           this.room.robot.variables.getAll().should.eql({});
         });
     });
@@ -203,7 +203,7 @@ describe('hubot-variables', function () {
           this.room.messages.slice(-1).should.eql([
             [ 'hubot', '@halkeye Okay, removed variable robins with 1 values.' ]
           ]);
-          this.room.robot.variables.hasVariable('robins').should.eql(true);
+          this.room.robot.variables.hasVariable('robins').should.eql(false);
           this.room.robot.variables.getAll().should.eql({});
         });
     });
@@ -217,7 +217,7 @@ describe('hubot-variables', function () {
           this.room.messages.slice(-1).should.eql([
             [ 'hubot', '@halkeye Okay, removed variable robins with 2 values.' ]
           ]);
-          this.room.robot.variables.hasVariable('robins').should.eql(true);
+          this.room.robot.variables.hasVariable('robins').should.eql(false);
           this.room.robot.variables.getAll().should.eql({});
         });
     });
