@@ -44,7 +44,7 @@
     "hubot": "~2.19.0",
     "hubot-test-helper": "^1.5.0",
     "mocha": "^3.4.1",
-    "nyc": "^10.0.0",
+    "nyc": "^11.0.2",
     "should": "~11.2.0"
   },
   "keywords": [
