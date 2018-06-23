@@ -37,7 +37,7 @@
     "coffee-script": "^1.12.2",
     "conventional-changelog-cli": "^2.0.0",
     "conventional-github-releaser": "^3.1.0",
-    "eslint": "^4.1.0",
+    "eslint": "^5.0.0",
     "eslint-config-standard": "^11.0.0",
     "eslint-plugin-promise": "^3.4.0",
     "eslint-plugin-standard": "^3.0.0",
