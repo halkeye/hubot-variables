@@ -2,7 +2,7 @@
 
 The best project ever.
 
-[![Build Status](https://travis-ci.org/halkeye/hubot-variables.png)](https://travis-ci.org/halkeye/hubot-variables)
+[![Build Status](https://travis-ci.org/halkeye/hubot-variables.png)](https://travis-ci.org/halkeye/hubot-variables) [![Greenkeeper badge](https://badges.greenkeeper.io/halkeye/hubot-variables.svg)](https://greenkeeper.io/)
 
 ## Getting Started
 
