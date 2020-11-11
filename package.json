@@ -35,26 +35,32 @@
   },
   "devDependencies": {
     "coffee-script": "^1.12.2",
-    "conventional-changelog-cli": "^2.0.21",
-    "conventional-github-releaser": "^3.1.0",
-    "eslint": "^7.4.0",
-    "eslint-config-standard": "^16.0.0",
-    "eslint-plugin-promise": "^4.0.0",
-    "eslint-plugin-standard": "^4.0.0",
-    "hubot": "~3.3.0",
-    "hubot-test-helper": "^1.8.1",
-    "mocha": "^7.0.0",
-    "nyc": "^15.0.0",
-    "should": "~13.2.0"
+    "conventional-changelog-cli": "^2.1.1",
+    "conventional-github-releaser": "^3.1.5",
+    "eslint": "^7.13.0",
+    "eslint-config-standard": "^16.0.1",
+    "eslint-plugin-promise": "^4.2.1",
+    "eslint-plugin-standard": "^4.1.0",
+    "hubot": "~3.3.2",
+    "hubot-test-helper": "^1.9.0",
+    "mocha": "^8.2.1",
+    "nyc": "^15.1.0",
+    "should": "~13.2.3"
   },
   "keywords": [
     "hubot",
     "hubot-scripts"
   ],
   "dependencies": {
-    "object.entries": "^1.0.4"
+    "object.entries": "^1.1.2"
   },
   "release": {
     "verifyConditions": []
+  },
+  "mocha": {
+    "require": ["coffee-script", "should"],
+    "recursive": true,
+    "reporter": "spec",
+    "spec": "src/test/**/*.js"
   }
 }
