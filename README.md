@@ -1,3 +1,5 @@
+# Migrated to https://github.com/halkeye/hubot-plugins/tree/master/packages/hubot-variables
+
 # hubot-variables
 
 The best project ever.
